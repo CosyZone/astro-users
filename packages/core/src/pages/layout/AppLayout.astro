@@ -1,0 +1,80 @@
+---
+import {
+    AppLayout as CosyLayout,
+    type ISidebarItem,
+    LanguageUtil,
+    type PaddingSize,
+} from '@coffic/cosy-ui';
+import { AppConfig } from '../config/config.app';
+import { FriendsConfig } from '../config/config.friends';
+import { ProductConfig } from '../config/config.products';
+
+interface Props {
+    title?: string;
+    description?: string;
+    isArticle?: boolean;
+    sidebar?: ISidebarItem | null | undefined;
+    py?: PaddingSize;
+    pt?: PaddingSize;
+    showSidebar?: boolean;
+    showTableOfContents?: boolean;
+    layout?: 'column' | 'row';
+}
+
+const {
+    title = '',
+    description = '',
+    isArticle = false,
+    sidebar,
+    py = 'none',
+    pt = 'none',
+    showSidebar = true,
+    layout = 'column',
+    showTableOfContents = false,
+} = Astro.props as Props;
+
+const lang = LanguageUtil.getCurrentLanguage(Astro);
+---
+
+<CosyLayout
+    showHeader={true}
+    showSidebar={showSidebar && sidebar !== null}
+    showFooter={true}
+    loadingDelay={800}
+    metaConfig={{
+        title: title,
+        description: description,
+        siteName: AppConfig.siteName,
+        keywords: AppConfig.keywords,
+        author: AppConfig.companyName.get(lang),
+        robots: 'index, follow',
+    }}
+    footerConfig={{
+        socialLinks: AppConfig.socialLinks,
+        company: AppConfig.companyName.get(lang),
+        homeLink: '',
+        inspirationalSlogan: AppConfig.inspirationalSlogan.get(lang),
+        siteName: AppConfig.siteName,
+        slogan: AppConfig.slogan.get(lang),
+        aboutInfo: {},
+        resourcesInfo: {},
+        legalInfo: {},
+        products: ProductConfig.products,
+        friendlyLinks: FriendsConfig.friends,
+    }}
+    mainContentConfig={{
+        size: 'full',
+        isArticle: isArticle,
+        layout: layout,
+        py: py,
+        pt: pt,
+        showTableOfContents: showTableOfContents,
+    }}
+    sidebarConfig={{
+        sidebarItems: sidebar ? [sidebar] : [],
+    }}
+    headerConfig={{
+        navItems: AppConfig.getNavItems(lang),
+    }}>
+    <slot />
+</CosyLayout>

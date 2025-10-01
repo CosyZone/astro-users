@@ -1,0 +1,158 @@
+# 项目结构说明
+
+## 核心目录结构
+
+```
+/packages/core/
+├── src/
+│   ├── integration/
+│   │   ├── index.ts          # Astro集成入口
+│   │   └── schema.sql        # 数据库模式定义
+│   ├── lib/
+│   │   ├── users.ts          # 用户查询工具类
+│   │   └── api-client.ts     # API客户端
+│   ├── pages/
+│   │   ├── api/
+│   │   │   ├── users.ts      # 用户API端点
+│   │   │   └── users/
+│   │   │       ├── [id].ts   # 单个用户API端点
+│   │   │       └── stats.ts  # 用户统计API端点
+│   │   └── users/
+│   │       ├── users.astro   # 用户列表页面
+│   │       ├── create.astro  # 创建用户页面
+│   │       └── [id]/
+│   │           ├── index.astro  # 用户详情页面
+│   │           └── edit.astro   # 编辑用户页面
+│   ├── types/
+│   │   ├── user.ts           # 用户相关类型定义
+│   │   └── raw-modules.d.ts  # 模块声明
+│   └── env.d.ts              # 环境类型声明
+├── index.ts                  # 包入口文件
+├── package.json              # 包配置文件
+├── README.md                 # 英文说明文档
+├── README_CN.md              # 中文说明文档
+├── USER_MANAGEMENT.md        # 用户管理使用指南
+├── ADD_INTEGRATION.md        # 集成添加指南
+└── STRUCTURE.md              # 项目结构说明
+```
+
+## 各组件详细说明
+
+### 1. 集成组件 (src/integration/)
+
+#### index.ts
+- Astro集成的入口文件
+- 定义集成名称和钩子
+- 配置集成选项
+
+#### schema.sql
+- SQLite数据库模式定义
+- 用户表结构
+- 索引定义
+
+### 2. 库组件 (src/lib/)
+
+#### users.ts
+- `UsersQuery` 类提供所有用户管理功能
+- 数据库操作封装
+- 用户查询、创建、更新、删除方法
+- 统计信息获取
+
+#### api-client.ts
+- 前端API客户端
+- 封装所有用户管理API调用
+- 便于在浏览器中使用
+
+### 3. 页面组件 (src/pages/)
+
+#### API端点 (src/pages/api/)
+
+##### users.ts
+- `GET /api/users` - 获取用户列表
+- `POST /api/users` - 创建新用户
+
+##### users/[id].ts
+- `GET /api/users/:id` - 获取单个用户
+- `PUT /api/users/:id` - 更新用户信息
+- `DELETE /api/users/:id` - 删除用户
+
+##### users/stats.ts
+- `GET /api/users/stats` - 获取用户统计数据
+
+#### 用户界面 (src/pages/users/)
+
+##### users.astro
+- 用户列表页面
+- 分页支持
+- 筛选功能
+- 统计信息展示
+
+##### create.astro
+- 创建用户表单
+- 表单验证
+- 提交处理
+
+##### [id]/index.astro
+- 用户详情页面
+- 用户信息展示
+- 删除操作
+
+##### [id]/edit.astro
+- 编辑用户表单
+- 表单预填充
+- 更新处理
+
+### 4. 类型定义 (src/types/)
+
+#### user.ts
+- `UserRecord` - 用户记录类型
+- `UserQueryOptions` - 查询选项类型
+- `UserQueryResult` - 查询结果类型
+- `UserStats` - 统计信息类型
+
+### 5. 包配置
+
+#### index.ts
+- 包入口文件
+- 导出所有公共API
+- 导出类型定义
+
+#### package.json
+- 包元数据
+- 依赖关系
+- 导出映射
+
+## 使用方式
+
+### 服务端使用
+```typescript
+import { UsersQuery } from '@coffic/astro-users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const users = await usersQuery.getUsers();
+```
+
+### 前端使用
+```typescript
+import { UsersApiClient } from '@coffic/astro-users/api-client';
+
+const client = new UsersApiClient();
+const users = await client.getUsers();
+```
+
+### API端点使用
+```
+GET /api/users?page=1&limit=10
+POST /api/users
+GET /api/users/1
+PUT /api/users/1
+DELETE /api/users/1
+GET /api/users/stats
+```
+
+## 页面路由
+
+- `/users` - 用户列表
+- `/users/create` - 创建用户
+- `/users/:id` - 用户详情
+- `/users/:id/edit` - 编辑用户

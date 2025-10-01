@@ -5,15 +5,14 @@
   "type": "module",
   "main": "index.ts",
   "exports": {
-    ".": "./index.ts"
+    ".": "./index.ts",
+    "./api-client": "./src/lib/api-client.ts",
+    "./src/pages/users.astro": "./src/pages/users.astro",
+    "./src/pages/users/create.astro": "./src/pages/users/create.astro",
+    "./src/pages/users/[id]/index.astro": "./src/pages/users/[id]/index.astro",
+    "./src/pages/users/[id]/edit.astro": "./src/pages/users/[id]/edit.astro"
   },
   "types": "index.ts",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
   "keywords": [
     "astro-integration",
     "user-management",
@@ -43,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/Coffic/astro-users/issues"
   },
-  "homepage": "https://github.com/Coffic/astro-users#readme"
+  "homepage": "https://github.com/Coffic/astro-users#readme",
+  "dependencies": {
+    "@coffic/cosy-ui": "^0.9.63"
+  }
 }

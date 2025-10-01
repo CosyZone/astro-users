@@ -5,6 +5,7 @@ export type { AstroUsersOptions };
 
 // 导出查询工具和类型
 export { UsersQuery } from './src/lib/users';
+export { UsersApiClient } from './src/lib/api-client';
 export type {
     UserRecord,
     UserQueryOptions,

@@ -1,0 +1,260 @@
+---
+import type { UserRecord } from '../../../types/user';
+import { UsersQuery } from '../../../lib/users';
+import AppLayout from '../../layout/AppLayout.astro';
+
+// 获取用户ID
+const { id } = Astro.params;
+const userId = parseInt(id || '0');
+
+if (isNaN(userId)) {
+    throw new Error('Invalid user ID');
+}
+
+// 创建查询实例
+const usersQuery = new UsersQuery(Astro.locals);
+
+// 获取用户信息
+const user: UserRecord | null = await usersQuery.getUserById(userId);
+
+if (!user) {
+    throw new Error('User not found');
+}
+
+// 处理表单提交
+let updateError: string | null = null;
+let updateSuccess = false;
+
+if (Astro.request.method === 'POST') {
+    try {
+        const formData = await Astro.request.formData();
+
+        const username = formData.get('username') as string;
+        const email = formData.get('email') as string;
+        const firstName = (formData.get('first_name') as string) || null;
+        const lastName = (formData.get('last_name') as string) || null;
+        const avatarUrl = (formData.get('avatar_url') as string) || null;
+        const role = (formData.get('role') as string) || 'user';
+        const isActive = formData.get('is_active') === 'on';
+
+        const updatedUser = await usersQuery.updateUser(userId, {
+            username,
+            email,
+            first_name: firstName,
+            last_name: lastName,
+            avatar_url: avatarUrl,
+            role,
+            is_active: isActive,
+        });
+
+        if (updatedUser) {
+            updateSuccess = true;
+            updateError = null;
+        } else {
+            updateError = '更新用户失败';
+        }
+    } catch (error) {
+        console.error('Update user error:', error);
+        updateError = '更新用户时发生错误: ' + (error as Error).message;
+    }
+}
+---
+
+<AppLayout
+    title={`编辑用户 - ${user.username}`}
+    description={`编辑用户 ${user.username} 的信息`}>
+    <div class="edit-user-page">
+        <h1>编辑用户</h1>
+
+        <div class="form-container">
+            {
+                updateSuccess && (
+                    <div class="alert alert-success">用户信息更新成功！</div>
+                )
+            }
+            {updateError && <div class="alert alert-error">{updateError}</div>}
+
+            <form method="POST" class="edit-user-form">
+                <div class="form-group">
+                    <label for="username">用户名 *</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={user.username}
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱 *</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={user.email}
+                        required
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">名字</label>
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        value={user.first_name || ''}
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">姓氏</label>
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        value={user.last_name || ''}
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="avatar_url">头像URL</label>
+                    <input
+                        type="text"
+                        id="avatar_url"
+                        name="avatar_url"
+                        value={user.avatar_url || ''}
+                        placeholder="https://example.com/avatar.jpg"
+                    />
+                </div>
+
+                <div class="form-group">
+                    <label for="role">角色</label>
+                    <select id="role" name="role">
+                        <option value="user" selected={user.role === 'user'}
+                            >普通用户</option
+                        >
+                        <option value="admin" selected={user.role === 'admin'}
+                            >管理员</option
+                        >
+                        <option
+                            value="moderator"
+                            selected={user.role === 'moderator'}>版主</option
+                        >
+                    </select>
+                </div>
+
+                <div class="form-group checkbox">
+                    <input
+                        type="checkbox"
+                        id="is_active"
+                        name="is_active"
+                        checked={user.is_active}
+                    />
+                    <label for="is_active">账户激活</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"
+                        >更新用户</button
+                    >
+                    <a href="/users" class="btn btn-secondary">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</AppLayout>
+
+<style>
+    .edit-user-page {
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-user-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group.checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group.checkbox input {
+        width: auto;
+    }
+
+    .form-actions {
+        grid-column: span 2;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+    .alert {
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .alert-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+</style>

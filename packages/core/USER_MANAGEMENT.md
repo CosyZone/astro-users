@@ -1,0 +1,173 @@
+# 用户管理功能使用指南
+
+## 简介
+
+[@coffic/astro-users](file:///Users/angel/Code/Coffic/astro-users/packages/core/src/integration/index.ts#L8-L8) 集成提供了完整的用户管理功能，包括用户创建、查询、更新和删除，以及用户统计和权限管理。
+
+## 功能特性
+
+1. **用户管理API** - RESTful API端点用于用户操作
+2. **用户界面** - 内置的用户管理界面
+3. **用户查询工具** - 服务端用户查询类
+4. **API客户端** - 前端使用的API客户端
+
+## API端点
+
+### 用户管理端点
+
+- `GET /api/users` - 获取用户列表
+- `POST /api/users` - 创建新用户
+- `GET /api/users/:id` - 获取单个用户
+- `PUT /api/users/:id` - 更新用户信息
+- `DELETE /api/users/:id` - 删除用户
+- `GET /api/users/stats` - 获取用户统计数据
+
+### 查询参数
+
+GET /api/users 支持以下查询参数：
+- `page` - 页码（默认: 1）
+- `limit` - 每页数量（默认: 20）
+- `username` - 用户名筛选
+- `email` - 邮箱筛选
+- `role` - 角色筛选
+- `is_active` - 激活状态筛选
+- `sortBy` - 排序字段
+- `sortOrder` - 排序方向（asc/desc）
+
+## 内置界面
+
+### 用户列表页面
+路径: `/users`
+功能:
+- 用户列表展示
+- 分页支持
+- 筛选功能
+- 用户统计展示
+- 角色统计展示
+
+### 创建用户页面
+路径: `/users/create`
+功能:
+- 用户创建表单
+- 表单验证
+- 创建成功后重定向到用户列表
+
+### 编辑用户页面
+路径: `/users/:id/edit`
+功能:
+- 用户信息编辑
+- 表单预填充
+- 更新操作
+
+### 用户详情页面
+路径: `/users/:id`
+功能:
+- 用户详细信息展示
+- 删除操作确认
+
+## 使用示例
+
+### 在Astro组件中使用UsersQuery
+
+```astro
+---
+import { UsersQuery } from '@coffic/astro-users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+
+// 获取用户列表
+const users = await usersQuery.getUsers({
+  page: 1,
+  limit: 10,
+  sortBy: 'created_at',
+  sortOrder: 'desc'
+});
+
+// 创建新用户
+const newUser = await usersQuery.createUser({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'secure_password'
+});
+---
+```
+
+### 在前端使用API客户端
+
+```javascript
+import { UsersApiClient } from '@coffic/astro-users';
+
+const client = new UsersApiClient();
+
+// 获取用户列表
+const users = await client.getUsers({
+  page: 1,
+  limit: 10
+});
+
+// 创建新用户
+const newUser = await client.createUser({
+  username: 'jane_doe',
+  email: 'jane@example.com',
+  password: 'secure_password'
+});
+```
+
+### 在API路由中使用
+
+```typescript
+import type { APIRoute } from 'astro';
+import { UsersQuery } from '@coffic/astro-users';
+
+export const GET: APIRoute = async ({ locals }) => {
+  const usersQuery = new UsersQuery(locals);
+  const users = await usersQuery.getUsers();
+  
+  return new Response(JSON.stringify(users), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+```
+
+## 数据库结构
+
+用户表包含以下字段：
+- `id` - 主键，自增
+- `username` - 用户名，唯一
+- `email` - 邮箱，唯一
+- `password` - 密码（应加密存储）
+- `first_name` - 名字（可选）
+- `last_name` - 姓氏（可选）
+- `avatar_url` - 头像URL（可选）
+- `role` - 角色（默认: 'user'）
+- `is_active` - 是否激活（默认: true）
+- `created_at` - 创建时间
+- `updated_at` - 更新时间
+
+## 权限角色
+
+默认支持以下角色：
+- `user` - 普通用户
+- `admin` - 管理员
+- `moderator` - 版主
+
+## 错误处理
+
+所有API端点都返回适当的HTTP状态码和错误信息：
+- 200 - 成功
+- 201 - 创建成功
+- 400 - 请求参数错误
+- 404 - 资源未找到
+- 500 - 服务器内部错误
+
+## 自定义配置
+
+可以通过环境变量自定义数据库绑定名称：
+```bash
+ASTRO_USERS_BINDING=MY_USERS_DB
+```
+
+默认绑定名称为 `USERS_DB`。
