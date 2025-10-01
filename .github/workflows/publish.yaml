@@ -39,14 +39,14 @@ jobs:
 
       - name: Build
         run: |
-          cd packages/astro-core
+          cd packages/core
           # 集成包不需要 astro build，只需要 TypeScript 编译检查
           pnpm exec tsc --noEmit
 
       - name: Bump version
         id: version
         run: |
-          cd packages/astro-core
+          cd packages/core
           # 获取当前版本号
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           # 直接用Node.js脚本修改版本号
