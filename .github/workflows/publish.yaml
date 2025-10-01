@@ -30,9 +30,7 @@ jobs:
           version: 9
 
       - name: Install dependencies
-        run: |
-          pnpm install
-          cd packages/astro-core && pnpm install
+        run: pnpm install
 
       - name: Configure Git
         run: |
