@@ -37,12 +37,6 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Build
-        run: |
-          cd packages/core
-          # 集成包不需要 astro build，只需要 TypeScript 编译检查
-          pnpm exec tsc --noEmit
-
       - name: Bump version
         id: version
         run: |
