@@ -1,0 +1,151 @@
+# Astro 用户管理集成
+
+一个用于用户管理并将其存储在 Cloudflare D1 数据库中的 Astro 集成。
+
+## 功能特性
+
+- 用户管理功能，包括：
+  - 用户注册和认证
+  - 基于角色的访问控制
+  - 用户资料管理
+  - 账户激活/停用
+- 自动提供用户管理工具
+- 将用户数据存储在 Cloudflare D1 数据库中
+- 支持 Cloudflare Workers
+- 支持开发模式
+
+## 安装
+
+```bash
+npm install @coffic/astro-users
+```
+
+## 使用方法
+
+将集成添加到您的 Astro 配置中：
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import astroUsers from '@coffic/astro-users';
+
+export default defineConfig({
+  integrations: [astroUsers({
+    binding: 'USERS_DB', // 您的 D1 数据库绑定名称
+    devMode: false       // 是否在开发模式下启用
+  })],
+});
+```
+
+该集成将自动：
+1. 提供用户管理工具
+2. 设置用户存储的数据库表结构
+
+## Cloudflare 设置
+
+1. 创建 D1 数据库：
+   ```bash
+   wrangler d1 create users-db
+   ```
+
+2. 更新您的 `wrangler.toml`：
+   ```toml
+   [[ d1_databases ]]
+   binding = "USERS_DB"
+   database_name = "users-db"
+   database_id = "your-database-id"
+   ```
+
+3. 集成将自动创建数据库表结构：
+   ```sql
+   CREATE TABLE IF NOT EXISTS users (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       username TEXT NOT NULL UNIQUE,
+       email TEXT NOT NULL UNIQUE,
+       password TEXT NOT NULL,
+       first_name TEXT,
+       last_name TEXT,
+       avatar_url TEXT,
+       role TEXT DEFAULT 'user',
+       is_active BOOLEAN DEFAULT TRUE,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+
+## 工作原理
+
+该集成为您提供用户管理工具，允许您在 Cloudflare D1 数据库中创建、读取、更新和删除用户。它包括基于角色的访问控制和账户激活功能。
+
+## 配置选项
+
+| 选项 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| `binding` | `string` | `'USERS_DB'` | Cloudflare D1 数据库绑定名称 |
+| `devMode` | `boolean` | `false` | 是否在开发模式下启用用户管理 |
+
+## 开发
+
+本项目使用 pnpm workspaces 的 monorepo 结构：
+
+```
+astro-users/
+├── package.json              # 根目录的包管理配置
+├── pnpm-workspace.yaml       # pnpm workspace 配置
+├── packages/
+│   ├── core/                 # Astro 集成包（从 astro-visits 重命名）
+│   │   ├── index.ts          # 集成入口文件
+│   │   ├── package.json      # 集成包配置
+│   │   ├── integration/      # 集成源代码
+│   │   │   ├── index.ts      # 主集成实现
+│   │   │   └── schema.sql    # 数据库结构
+│   │   └── src/
+│   │       ├── lib/          # 用户管理工具
+│   │       │   └── users.ts  # 用户查询和管理类
+│   │       ├── types/        # TypeScript 类型定义
+│   │       │   └── user.ts   # 用户类型定义
+│   │       └── pages/
+│   │           └── api/
+│   │               └── user.ts  # 用户管理 API 端点
+│   └── example/              # 使用集成的示例项目
+│       ├── package.json      # 示例项目配置
+│       ├── astro.config.mjs  # 示例项目 Astro 配置
+│       └── src/
+│           └── pages/
+│               ├── index.astro  # 示例首页
+│               └── admin.astro  # 用户管理后台页面
+```
+
+### 安装依赖
+
+```bash
+pnpm install
+```
+
+### 运行示例项目
+
+```bash
+# 从根目录运行
+pnpm dev
+
+# 或者从示例项目目录运行
+cd packages/example
+pnpm dev
+```
+
+这将启动示例 Astro 项目，运行在可用端口上（例如 http://localhost:4328）
+
+### 构建集成
+
+```bash
+# 从根目录构建
+pnpm build
+
+# 或者从集成包目录构建
+cd packages/core
+pnpm build
+```
+
+## 许可证
+
+MIT

@@ -1,0 +1,47 @@
+{
+  "name": "@coffic/astro-users",
+  "version": "1.0.5",
+  "description": "An Astro integration for user management with Cloudflare D1 database",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "types": "index.ts",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "keywords": [
+    "astro-integration",
+    "user-management",
+    "cloudflare",
+    "d1-database"
+  ],
+  "author": "Coffic",
+  "license": "MIT",
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "astro": "^5.14.1",
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0"
+  },
+  "files": [
+    "README.md",
+    "README_CN.md",
+    "index.ts",
+    "src/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Coffic/astro-users.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Coffic/astro-users/issues"
+  },
+  "homepage": "https://github.com/Coffic/astro-users#readme"
+}

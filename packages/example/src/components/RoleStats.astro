@@ -1,0 +1,63 @@
+---
+export interface Props {
+    roleStats: Array<{
+        role: string;
+        count: number;
+    }>;
+}
+
+const { roleStats } = Astro.props;
+---
+
+<div class="section">
+    <h2>👥 用户角色统计</h2>
+    <div class="role-stats">
+        {
+            roleStats.map((role) => (
+                <div class="role-item">
+                    <span class="role-name">{role.role}</span>
+                    <span class="role-count">{role.count} 个用户</span>
+                </div>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    .section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .role-stats {
+        display: grid;
+        gap: 10px;
+    }
+
+    .role-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: #f9fafb;
+        border-radius: 4px;
+    }
+
+    .role-name {
+        font-family: monospace;
+        font-size: 0.9em;
+        color: #374151;
+    }
+
+    .role-count {
+        background: #2563eb;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+</style>
