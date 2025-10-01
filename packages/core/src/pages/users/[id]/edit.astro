@@ -3,6 +3,8 @@ import type { UserRecord } from '../../../types/user';
 import { UsersQuery } from '../../../lib/users';
 import AppLayout from '../../layout/AppLayout.astro';
 
+export const prerender = false;
+
 // 获取用户ID
 const { id } = Astro.params;
 const userId = parseInt(id || '0');
