@@ -3,6 +3,8 @@ import type { UserRecord, UserQueryResult, UserStats } from '../types/user';
 import { UsersQuery } from '../lib/users';
 import AppLayout from './layout/AppLayout.astro';
 
+export const prerender = false;
+
 // 创建查询实例
 const usersQuery = new UsersQuery(Astro.locals);
 
