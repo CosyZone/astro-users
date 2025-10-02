@@ -36,18 +36,18 @@ const users: UserQueryResult = await usersQuery.getUsers({
         <Heading level={1}>用户管理</Heading>
 
         <!-- 筛选表单 -->
-        <UserFilter 
-          usernameFilter={usernameFilter} 
-          roleFilter={roleFilter} 
-          limit={limit} 
+        <UserFilter
+            usernameFilter={usernameFilter}
+            roleFilter={roleFilter}
+            limit={limit}
         />
 
         <!-- 用户表格 -->
-        <UserList 
-          users={users} 
-          usernameFilter={usernameFilter} 
-          roleFilter={roleFilter} 
-          limit={limit} 
+        <UserList
+            users={users}
+            usernameFilter={usernameFilter}
+            roleFilter={roleFilter}
+            limit={limit}
         />
     </Container>
 </DashboardLayout>

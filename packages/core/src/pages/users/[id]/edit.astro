@@ -80,10 +80,10 @@ if (Astro.request.method === 'POST') {
     description={`编辑用户 ${user.username} 的信息`}>
     <Container width="xl" background="accent/10">
         <Heading level={1}>编辑用户</Heading>
-        <EditUserForm 
-          user={user} 
-          updateSuccess={updateSuccess} 
-          updateError={updateError} 
+        <EditUserForm
+            user={user}
+            updateSuccess={updateSuccess}
+            updateError={updateError}
         />
     </Container>
 </AppLayout>

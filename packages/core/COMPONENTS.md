@@ -16,8 +16,8 @@
 **使用示例:**
 ```astro
 ---
-import { UserList } from '@coffic/astro-users';
-import { UsersQuery } from '@coffic/astro-users/lib/users';
+import UserList from '@coffic/astro-users/src/components/UserList.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
 
 const usersQuery = new UsersQuery(Astro.locals);
 const users = await usersQuery.getUsers({
@@ -43,7 +43,7 @@ const users = await usersQuery.getUsers({
 **使用示例:**
 ```astro
 ---
-import { UserFilter } from '@coffic/astro-users';
+import UserFilter from '@coffic/astro-users/src/components/UserFilter.astro';
 ---
 
 <UserFilter 
@@ -63,7 +63,7 @@ import { UserFilter } from '@coffic/astro-users';
 **使用示例:**
 ```astro
 ---
-import { CreateUserForm } from '@coffic/astro-users';
+import CreateUserForm from '@coffic/astro-users/src/components/CreateUserForm.astro';
 ---
 
 <CreateUserForm />
@@ -80,8 +80,8 @@ import { CreateUserForm } from '@coffic/astro-users';
 **使用示例:**
 ```astro
 ---
-import { EditUserForm } from '@coffic/astro-users';
-import { UsersQuery } from '@coffic/astro-users/lib/users';
+import EditUserForm from '@coffic/astro-users/src/components/EditUserForm.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
 
 const usersQuery = new UsersQuery(Astro.locals);
 const user = await usersQuery.getUserById(1);
@@ -99,8 +99,8 @@ const user = await usersQuery.getUserById(1);
 **使用示例:**
 ```astro
 ---
-import { UserDetail } from '@coffic/astro-users';
-import { UsersQuery } from '@coffic/astro-users/lib/users';
+import UserDetail from '@coffic/astro-users/src/components/UserDetail.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
 
 const usersQuery = new UsersQuery(Astro.locals);
 const user = await usersQuery.getUserById(1);
@@ -119,7 +119,7 @@ const user = await usersQuery.getUserById(1);
 **使用示例:**
 ```astro
 ---
-import { SignupForm } from '@coffic/astro-users';
+import SignupForm from '@coffic/astro-users/src/components/SignupForm.astro';
 ---
 
 <SignupForm />
@@ -134,7 +134,7 @@ import { SignupForm } from '@coffic/astro-users';
 **使用示例:**
 ```astro
 ---
-import { LoginForm } from '@coffic/astro-users';
+import LoginForm from '@coffic/astro-users/src/components/LoginForm.astro';
 ---
 
 <LoginForm />
@@ -146,8 +146,9 @@ import { LoginForm } from '@coffic/astro-users';
 
 ```astro
 ---
-import { UserList, UserFilter } from '@coffic/astro-users';
-import { UsersQuery } from '@coffic/astro-users/lib/users';
+import UserList from '@coffic/astro-users/src/components/UserList.astro';
+import UserFilter from '@coffic/astro-users/src/components/UserFilter.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
 
 const usersQuery = new UsersQuery(Astro.locals);
 const users = await usersQuery.getUsers({
@@ -178,3 +179,4 @@ const users = await usersQuery.getUsers({
 2. 使用数据查询组件时，需要传入 `Astro.locals` 以正确访问数据库。
 3. 组件样式使用了 CSS Grid 和 Flexbox，请确保浏览器兼容性。
 4. 表单提交处理需要在使用组件的页面中实现相应的逻辑。
+5. 组件需要通过完整路径导入，例如：`@coffic/astro-users/src/components/UserList.astro`
