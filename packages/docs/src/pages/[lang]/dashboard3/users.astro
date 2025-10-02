@@ -31,9 +31,9 @@ if (Astro.request.method === 'POST') {
       const username = formData.get('username') as string;
       const email = formData.get('email') as string;
       const password = formData.get('password') as string;
-      const firstName = (formData.get('first_name') as string) || undefined;
-      const lastName = (formData.get('last_name') as string) || undefined;
-      const avatarUrl = (formData.get('avatar_url') as string) || undefined;
+      const firstName = (formData.get('first_name') as string) || null;
+      const lastName = (formData.get('last_name') as string) || null;
+      const avatarUrl = (formData.get('avatar_url') as string) || null;
       const role = (formData.get('role') as string) || 'user';
       const isActive = formData.get('is_active') === 'on';
 
@@ -60,9 +60,11 @@ if (Astro.request.method === 'POST') {
           createError = '创建用户失败';
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Create user error:', error);
-      createError = '创建用户时发生错误: ' + (error?.message || '未知错误');
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      createError = '创建用户时发生错误: ' + errorMessage;
     }
   }
 }
@@ -71,8 +73,8 @@ if (Astro.request.method === 'POST') {
 const url = new URL(Astro.request.url);
 const page = parseInt(url.searchParams.get('page') || '1');
 const limit = parseInt(url.searchParams.get('limit') || '10');
-const usernameFilter = url.searchParams.get('username') || undefined;
-const roleFilter = url.searchParams.get('role') || undefined;
+const usernameFilter = url.searchParams.get('username') ?? undefined;
+const roleFilter = url.searchParams.get('role') ?? undefined;
 
 // 查询数据
 const users = await usersQuery.getUsers({

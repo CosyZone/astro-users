@@ -23,9 +23,9 @@ if (Astro.request.method === 'POST') {
       const username = formData.get('username') as string;
       const email = formData.get('email') as string;
       const password = formData.get('password') as string;
-      const firstName = (formData.get('first_name') as string) || undefined;
-      const lastName = (formData.get('last_name') as string) || undefined;
-      const avatarUrl = (formData.get('avatar_url') as string) || undefined;
+      const firstName = (formData.get('first_name') as string) || null;
+      const lastName = (formData.get('last_name') as string) || null;
+      const avatarUrl = (formData.get('avatar_url') as string) || null;
       const role = (formData.get('role') as string) || 'user';
       const isActive = formData.get('is_active') === 'on';
 
@@ -54,7 +54,8 @@ if (Astro.request.method === 'POST') {
       }
     } catch (error) {
       console.error('Create user error:', error);
-      createError = '创建用户时发生错误: ' + (error?.message || '未知错误');
+      createError =
+        '创建用户时发生错误: ' + ((error as Error).message || '未知错误');
     }
   }
 }
