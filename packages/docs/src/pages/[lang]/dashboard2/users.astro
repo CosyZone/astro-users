@@ -1,0 +1,37 @@
+---
+import { Button, Heading } from '@coffic/cosy-ui';
+import { UsersQuery } from '@coffic/astro-users';
+import { UserList, UserFilter } from '@coffic/astro-users/components';
+import DashboardLayout2 from '@/layouts/DashboardLayout2.astro';
+
+export const prerender = false;
+
+const { lang = 'zh-cn' } = Astro.params;
+
+// 获取用户数据
+const usersQuery = new UsersQuery(Astro.locals);
+const usersResult = await usersQuery.getUsers();
+
+// 获取查询参数
+const url = new URL(Astro.request.url);
+const usernameFilter = url.searchParams.get('username') || '';
+const roleFilter = url.searchParams.get('role') || '';
+const limit = parseInt(url.searchParams.get('limit') || '20');
+---
+
+<DashboardLayout2 title="用户管理" showSidebar={true} showTOC={false}>
+    <div class="flex justify-between items-center mb-6">
+        <Heading>用户管理</Heading>
+        <Button href="/users/create">创建用户</Button>
+    </div>
+
+    <UserFilter {usernameFilter} {roleFilter} {limit} />
+
+    <div class="mt-6">
+        <UserList users={usersResult} {usernameFilter} {roleFilter} {limit} />
+    </div>
+
+    <div class="mt-4 text-sm text-gray-500">
+        总共 {usersResult.pagination.total} 个用户
+    </div>
+</DashboardLayout2>

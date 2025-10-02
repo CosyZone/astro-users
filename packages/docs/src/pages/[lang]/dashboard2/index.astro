@@ -1,0 +1,24 @@
+---
+import DashboardLayout2 from '@/layouts/DashboardLayout2.astro';
+
+export const prerender = true;
+
+const { lang = 'zh-cn' } = Astro.params;
+
+export const getStaticPaths = async () => {
+    return [
+        {
+            params: { lang: 'zh-cn' },
+        },
+        {
+            params: { lang: 'en' },
+        },
+    ];
+};
+
+interface Props {
+    lang: string;
+}
+---
+
+<DashboardLayout2 title="Cosy UI 组件库" showSidebar={false} showTOC={false} />

@@ -1,0 +1,48 @@
+---
+import { type ISidebarItem, Alert, PlaceHolder } from '@coffic/cosy-ui';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	title: string;
+	showTOC?: boolean;
+	showSidebar?: boolean;
+	sidebarItems?: ISidebarItem | null;
+	showDemoBanner?: boolean;
+}
+
+const { title, showTOC = true } = Astro.props;
+
+// 控制台侧边栏配置
+const getDashboardSidebar = (lang: string): ISidebarItem => {
+	return {
+		href: `/${lang}/dashboard`,
+		text: lang === 'zh-cn' ? '控制台3' : 'Dashboard',
+		items: [
+			{
+				href: `/${lang}/dashboard3`,
+				text: lang === 'zh-cn' ? '首页' : 'Home',
+			},
+			{
+				href: `/${lang}/dashboard3/users`,
+				text: lang === 'zh-cn' ? '用户管理' : 'User Management',
+			},
+		],
+	};
+};
+
+const sidebarItems = getDashboardSidebar(
+	Astro.url.searchParams.get('lang') || 'zh-cn',
+);
+---
+
+<BaseLayout
+	title={title}
+	showTOC={showTOC}
+	showSidebar={true}
+	sidebarItems={sidebarItems}>
+	<Alert closable={false}
+		>使用了 @coffic/astro-users 提供的 UsersQuery 来渲染用户管理</Alert
+	>
+	<PlaceHolder height="xs" />
+	<slot />
+</BaseLayout>

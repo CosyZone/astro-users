@@ -17,12 +17,16 @@ export const configApp = {
 			title: "用户管理",
 		},
 		{
-			href: `${LinkUtil.getBaseUrl()}${lang}/admin`,
+			href: `${LinkUtil.getBaseUrl()}${lang}/dashboard1`,
 			title: "控制台1",
 		},
 		{
-			href: `${LinkUtil.getBaseUrl()}${lang}/dashboard`,
+			href: `${LinkUtil.getBaseUrl()}${lang}/dashboard2`,
 			title: "控制台2",
+		},
+		{
+			href: `${LinkUtil.getBaseUrl()}${lang}/dashboard3`,
+			title: "控制台3",
 		},
 	],
 };

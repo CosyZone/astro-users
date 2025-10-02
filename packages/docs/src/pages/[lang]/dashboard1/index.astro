@@ -1,11 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import HeroSection from '@/widgets/HeroSection.astro';
-import DesignPhilosophy from '@/widgets/DesignPhilosophy.astro';
-import LiveDemo from '@/widgets/LiveDemo.astro';
-import BuilderPattern from '@/widgets/BuilderPattern.astro';
-import Showcase from '@/widgets/Showcase.astro';
-import { Button } from '@coffic/cosy-ui';
+import { Button, Text, Hero } from '@coffic/cosy-ui';
 
 export const prerender = true;
 
@@ -34,5 +29,9 @@ interface Props {
     isArticle={false}
     verticalPadding="4xl"
     mainLayout="column">
-    <Button href="/en/manuals/guide"> 开始使用 </Button>
+    <Hero
+        title="快速实现"
+        description="使用 @coffic/astro-users 提供的路由页面来渲染用户管理"
+        links={[{ text: '用户管理', href: '/users' }]}
+    />
 </BaseLayout>

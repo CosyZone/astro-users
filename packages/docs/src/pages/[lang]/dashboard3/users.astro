@@ -1,0 +1,134 @@
+---
+import { UsersQuery } from '@coffic/astro-users';
+import AppLayout from '@/layouts/BaseLayout.astro';
+import { Container } from '@coffic/cosy-ui';
+import { LanguageUtil } from '@coffic/cosy-ui';
+import CreateUserForm from '@/components/CreateUserForm.astro';
+import UserStats from '@/components/UserStats.astro';
+import UserFilter from '@/components/UserFilter.astro';
+import UserTable from '@/components/UserTable.astro';
+import Pagination from '@/components/Pagination.astro';
+import RoleStats from '@/components/RoleStats.astro';
+import DashboardLayout3 from '@/layouts/DashboardLayout3.astro';
+
+const lang = LanguageUtil.getCurrentLanguage(Astro);
+
+export const prerender = false;
+
+// 创建查询实例（直接传递 Astro.locals）
+const usersQuery = new UsersQuery(Astro.locals);
+
+// 处理创建用户表单提交
+let createError: string | null = null;
+let createSuccess = false;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const action = formData.get('action');
+
+  if (action === 'create') {
+    try {
+      const username = formData.get('username') as string;
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+      const firstName = (formData.get('first_name') as string) || undefined;
+      const lastName = (formData.get('last_name') as string) || undefined;
+      const avatarUrl = (formData.get('avatar_url') as string) || undefined;
+      const role = (formData.get('role') as string) || 'user';
+      const isActive = formData.get('is_active') === 'on';
+
+      if (!username || !email || !password) {
+        createError = '用户名、邮箱和密码是必填项';
+      } else {
+        const newUser = await usersQuery.createUser({
+          username,
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+          avatar_url: avatarUrl,
+          role,
+          is_active: isActive,
+        });
+
+        if (newUser) {
+          createSuccess = true;
+          createError = null;
+          // 重定向以清除表单数据
+          return Astro.redirect('/admin');
+        } else {
+          createError = '创建用户失败';
+        }
+      }
+    } catch (error) {
+      console.error('Create user error:', error);
+      createError = '创建用户时发生错误: ' + (error?.message || '未知错误');
+    }
+  }
+}
+
+// 获取查询参数
+const url = new URL(Astro.request.url);
+const page = parseInt(url.searchParams.get('page') || '1');
+const limit = parseInt(url.searchParams.get('limit') || '10');
+const usernameFilter = url.searchParams.get('username') || undefined;
+const roleFilter = url.searchParams.get('role') || undefined;
+
+// 查询数据
+const users = await usersQuery.getUsers({
+  page,
+  limit,
+  sortBy: 'created_at',
+  sortOrder: 'desc',
+  filters: {
+    username: usernameFilter,
+    role: roleFilter,
+  },
+});
+
+// 获取统计数据
+const stats = await usersQuery.getStats();
+
+// 获取用户角色统计
+const roleStats = stats.roles;
+---
+
+<DashboardLayout3 showSidebar={false} title="Astro Visits Integration Example">
+  <Container width="xl" margin="xl" py="xl">
+    <CreateUserForm createSuccess={createSuccess} createError={createError} />
+
+    <UserStats
+      stats={{
+        totalUsers: stats.totalUsers,
+        activeUsers: stats.activeUsers,
+        todayUsers: stats.todayUsers,
+        totalPages: users.pagination.totalPages,
+      }}
+    />
+
+    <UserFilter
+      usernameFilter={usernameFilter}
+      roleFilter={roleFilter}
+      limit={limit}
+    />
+
+    <div class="section">
+      <h2>📋 用户列表</h2>
+      <p>
+        显示第 {users.pagination.page} 页，共 {users.pagination.totalPages} 页，总计
+        {users.pagination.total} 条记录
+      </p>
+
+      <UserTable users={{ data: users.data }} />
+
+      <Pagination
+        users={users}
+        limit={limit}
+        usernameFilter={usernameFilter}
+        roleFilter={roleFilter}
+      />
+    </div>
+
+    <RoleStats roleStats={roleStats} />
+  </Container>
+</DashboardLayout3>

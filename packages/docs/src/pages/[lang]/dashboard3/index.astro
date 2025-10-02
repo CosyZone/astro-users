@@ -1,14 +1,7 @@
 ---
 import { UsersQuery } from '@coffic/astro-users';
-import AppLayout from '@/layouts/BaseLayout.astro';
-import { Container } from '@coffic/cosy-ui';
 import { LanguageUtil } from '@coffic/cosy-ui';
-import CreateUserForm from '@/components/CreateUserForm.astro';
-import UserStats from '@/components/UserStats.astro';
-import UserFilter from '@/components/UserFilter.astro';
-import UserTable from '@/components/UserTable.astro';
-import Pagination from '@/components/Pagination.astro';
-import RoleStats from '@/components/RoleStats.astro';
+import DashboardLayout3 from '@/layouts/DashboardLayout3.astro';
 
 const lang = LanguageUtil.getCurrentLanguage(Astro);
 
@@ -92,46 +85,7 @@ const stats = await usersQuery.getStats();
 const roleStats = stats.roles;
 ---
 
-<AppLayout
+<DashboardLayout3
   showSidebar={false}
-  py="5xl"
   title="Astro Visits Integration Example"
-  description="This example demonstrates the astro-visits integration.">
-  <Container width="xl" margin="xl" py="xl">
-    <CreateUserForm createSuccess={createSuccess} createError={createError} />
-
-    <UserStats
-      stats={{
-        totalUsers: stats.totalUsers,
-        activeUsers: stats.activeUsers,
-        todayUsers: stats.todayUsers,
-        totalPages: users.pagination.totalPages,
-      }}
-    />
-
-    <UserFilter
-      usernameFilter={usernameFilter}
-      roleFilter={roleFilter}
-      limit={limit}
-    />
-
-    <div class="section">
-      <h2>📋 用户列表</h2>
-      <p>
-        显示第 {users.pagination.page} 页，共 {users.pagination.totalPages} 页，总计
-        {users.pagination.total} 条记录
-      </p>
-
-      <UserTable users={{ data: users.data }} />
-
-      <Pagination
-        users={users}
-        limit={limit}
-        usernameFilter={usernameFilter}
-        roleFilter={roleFilter}
-      />
-    </div>
-
-    <RoleStats roleStats={roleStats} />
-  </Container>
-</AppLayout>
+/>
