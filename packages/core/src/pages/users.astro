@@ -29,13 +29,12 @@ const users: UserQueryResult = await usersQuery.getUsers({
 });
 ---
 
-<DashboardLayout title="用户管理" description="用户管理页面" lang="zh">
-    <Container width="xl" background="accent/10" flex="col" gap="xl">
+<DashboardLayout title="用户管理" description="用户管理页面" lang="zh-cn">
+    <Container width="full" background="none" flex="col" gap="xl">
         <Heading level={1}>用户管理</Heading>
 
         <!-- 筛选表单 -->
         <Container width="full" background="info/10">
-            <Heading level={2}>筛选用户</Heading>
             <form method="GET" class="filter-form">
                 <input
                     type="text"

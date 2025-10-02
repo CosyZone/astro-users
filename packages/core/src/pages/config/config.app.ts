@@ -4,8 +4,8 @@ import LinkConfig from "./config.link";
 export const AppConfig = {
 	session_key: "kuaiyizhi-session",
 
-	companyName: LangPackage.setZh("青岛岳亿网络科技有限公司").setEn(
-		"Qingdao Yueyi Network Technology Co., Ltd.",
+	companyName: LangPackage.setZh("Coffic 工作室").setEn(
+		"Coffic Studio",
 	),
 
 	icp: LangPackage.setZh("鲁ICP备2022009149号-2").setEn(
@@ -17,7 +17,7 @@ export const AppConfig = {
 	),
 	copyright: LangPackage.setZh("版权所有").setEn("All rights reserved"),
 	keywords: "Cisum,GitOk,TravelMode,Netto,CosyUI,快易知",
-	siteName: "快易知",
+	siteName: "用户管理系统",
 
 	getNavItems(lang: string) {
 		return [
