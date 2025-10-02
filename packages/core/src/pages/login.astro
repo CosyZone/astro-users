@@ -2,6 +2,7 @@
 import { UsersQuery } from '../lib/users';
 import AppLayout from './layout/AppLayout.astro';
 import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import LoginForm from '../components/LoginForm.astro';
 
 export const prerender = false;
 
@@ -41,26 +42,7 @@ if (Astro.request.method === 'POST') {
   <Container width="md" background="accent/10">
     <Heading level={1}>用户登录</Heading>
 
-    <div class="login-container">
-      {loginError && <Alert type="error">{loginError}</Alert>}
-
-      <form method="POST" class="login-form">
-        <div class="form-group">
-          <label for="username">用户名</label>
-          <input type="text" id="username" name="username" required />
-        </div>
-
-        <div class="form-group">
-          <label for="password">密码</label>
-          <input type="password" id="password" name="password" required />
-        </div>
-
-        <div class="form-actions">
-          <Button type="submit" variant="primary">登录</Button>
-          <Link href="/signup" btn>注册新账户</Link>
-        </div>
-      </form>
-    </div>
+    <LoginForm loginError={loginError} />
   </Container>
 </AppLayout>
 

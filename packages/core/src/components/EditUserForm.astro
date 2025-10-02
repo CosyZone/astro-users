@@ -1,0 +1,162 @@
+---
+import type { UserRecord } from '../types/user';
+import { Alert, Button, Link } from '@coffic/cosy-ui';
+
+export interface Props {
+    user: UserRecord;
+    updateSuccess?: boolean;
+    updateError?: string | null;
+}
+
+const { user, updateSuccess = false, updateError = null } = Astro.props;
+---
+
+<div class="form-container">
+    {updateSuccess && <Alert type="success">用户信息更新成功！</Alert>}
+    {updateError && <Alert type="error">{updateError}</Alert>}
+
+    <form method="POST" class="edit-user-form">
+        <div class="form-group">
+            <label for="username">用户名 *</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value={user.username}
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="email">邮箱 *</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value={user.email}
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">名字</label>
+            <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                value={user.first_name || ''}
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">姓氏</label>
+            <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                value={user.last_name || ''}
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="avatar_url">头像URL</label>
+            <input
+                type="text"
+                id="avatar_url"
+                name="avatar_url"
+                value={user.avatar_url || ''}
+                placeholder="https://example.com/avatar.jpg"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="password">新密码（留空则不更改）</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="留空则不更改密码"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="role">角色</label>
+            <select id="role" name="role">
+                <option value="user" selected={user.role === 'user'}
+                    >普通用户</option
+                >
+                <option value="admin" selected={user.role === 'admin'}
+                    >管理员</option
+                >
+                <option value="moderator" selected={user.role === 'moderator'}
+                    >版主</option
+                >
+            </select>
+        </div>
+
+        <div class="form-group checkbox">
+            <input
+                type="checkbox"
+                id="is_active"
+                name="is_active"
+                checked={user.is_active}
+            />
+            <label for="is_active">账户激活</label>
+        </div>
+
+        <div class="form-actions">
+            <Button type="submit" variant="primary">更新用户</Button>
+            <Link href="/users" btn>取消</Link>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-user-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group.checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group.checkbox input {
+        width: auto;
+    }
+
+    .form-actions {
+        grid-column: span 2;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+</style>

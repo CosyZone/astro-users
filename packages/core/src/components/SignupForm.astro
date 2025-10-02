@@ -1,0 +1,127 @@
+---
+import { Alert, Button, Link } from '@coffic/cosy-ui';
+
+export interface Props {
+    signupSuccess?: boolean;
+    signupError?: string | null;
+}
+
+const { signupSuccess = false, signupError = null } = Astro.props;
+---
+
+<div class="signup-container">
+    {
+        signupSuccess && (
+            <Alert type="success">
+                <p>注册成功！</p>
+                <p>
+                    <Link href="/users">点击这里</Link> 查看用户列表
+                </p>
+            </Alert>
+        )
+    }
+    {signupError && <Alert type="error">{signupError}</Alert>}
+
+    {
+        !signupSuccess && (
+            <form method="POST" class="signup-form">
+                <div class="form-group">
+                    <label for="username">用户名 *</label>
+                    <input type="text" id="username" name="username" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱 *</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">名字</label>
+                    <input type="text" id="first_name" name="first_name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">姓氏</label>
+                    <input type="text" id="last_name" name="last_name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码 *</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        minlength="6"
+                    />
+                    <small>密码长度至少为6个字符</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">确认密码 *</label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        required
+                    />
+                </div>
+
+                <div class="form-actions">
+                    <Button type="submit" variant="primary">
+                        注册
+                    </Button>
+                    <Link href="/users" btn>
+                        取消
+                    </Link>
+                </div>
+            </form>
+        )
+    }
+</div>
+
+<style>
+    .signup-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+    }
+
+    .signup-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group small {
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+</style>

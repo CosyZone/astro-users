@@ -3,6 +3,7 @@ import type { UserRecord } from '../../../types/user';
 import { UsersQuery } from '../../../lib/users';
 import AppLayout from '../../layout/AppLayout.astro';
 import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import EditUserForm from '../../../components/EditUserForm.astro';
 
 export const prerender = false;
 
@@ -79,116 +80,11 @@ if (Astro.request.method === 'POST') {
     description={`编辑用户 ${user.username} 的信息`}>
     <Container width="xl" background="accent/10">
         <Heading level={1}>编辑用户</Heading>
-
-        <div class="edit-user-page">
-            <div class="form-container">
-                {
-                    updateSuccess && (
-                        <Alert type="success">用户信息更新成功！</Alert>
-                    )
-                }
-                {updateError && <Alert type="error">{updateError}</Alert>}
-
-                <form method="POST" class="edit-user-form">
-                    <div class="form-group">
-                        <label for="username">用户名 *</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={user.username}
-                            required
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">邮箱 *</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={user.email}
-                            required
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="first_name">名字</label>
-                        <input
-                            type="text"
-                            id="first_name"
-                            name="first_name"
-                            value={user.first_name || ''}
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="last_name">姓氏</label>
-                        <input
-                            type="text"
-                            id="last_name"
-                            name="last_name"
-                            value={user.last_name || ''}
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="avatar_url">头像URL</label>
-                        <input
-                            type="text"
-                            id="avatar_url"
-                            name="avatar_url"
-                            value={user.avatar_url || ''}
-                            placeholder="https://example.com/avatar.jpg"
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">新密码（留空则不更改）</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="留空则不更改密码"
-                        />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="role">角色</label>
-                        <select id="role" name="role">
-                            <option value="user" selected={user.role === 'user'}
-                                >普通用户</option
-                            >
-                            <option
-                                value="admin"
-                                selected={user.role === 'admin'}>管理员</option
-                            >
-                            <option
-                                value="moderator"
-                                selected={user.role === 'moderator'}
-                                >版主</option
-                            >
-                        </select>
-                    </div>
-
-                    <div class="form-group checkbox">
-                        <input
-                            type="checkbox"
-                            id="is_active"
-                            name="is_active"
-                            checked={user.is_active}
-                        />
-                        <label for="is_active">账户激活</label>
-                    </div>
-
-                    <div class="form-actions">
-                        <Button type="submit" variant="primary">更新用户</Button
-                        >
-                        <Link href="/users" btn>取消</Link>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <EditUserForm 
+          user={user} 
+          updateSuccess={updateSuccess} 
+          updateError={updateError} 
+        />
     </Container>
 </AppLayout>
 

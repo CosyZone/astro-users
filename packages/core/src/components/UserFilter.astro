@@ -1,0 +1,69 @@
+---
+import { Button, Container } from '@coffic/cosy-ui';
+
+export interface Props {
+    usernameFilter?: string;
+    roleFilter?: string;
+    limit: number;
+}
+
+const { usernameFilter, roleFilter, limit } = Astro.props;
+---
+
+<Container width="full" background="info/10">
+    <form method="GET" class="filter-form">
+        <input
+            type="text"
+            name="username"
+            placeholder="筛选用户名（包含关键词）"
+            value={usernameFilter || ''}
+        />
+        <select name="role">
+            <option value="">所有角色</option>
+            <option value="admin" selected={roleFilter === 'admin'}
+                >管理员</option
+            >
+            <option value="user" selected={roleFilter === 'user'}
+                >普通用户</option
+            >
+            <option value="moderator" selected={roleFilter === 'moderator'}
+                >版主</option
+            >
+        </select>
+        <input
+            type="number"
+            name="limit"
+            placeholder="每页数量"
+            value={limit}
+            min="1"
+            max="100"
+        />
+        <Button type="submit">筛选</Button>
+        <Button href="/users/create">创建</Button>
+        {(usernameFilter || roleFilter) && <a href="/users">清除筛选</a>}
+    </form>
+</Container>
+
+<style>
+    .filter-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-form input,
+    .filter-form select,
+    .filter-form button {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .filter-form button {
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+    }
+</style>

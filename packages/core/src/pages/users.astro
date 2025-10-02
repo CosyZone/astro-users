@@ -3,6 +3,8 @@ import type { UserRecord, UserQueryResult } from '../types/user';
 import { UsersQuery } from '../lib/users';
 import { Button, Container, Heading, Link } from '@coffic/cosy-ui';
 import DashboardLayout from './layout/DashboardLayout.astro';
+import UserFilter from '../components/UserFilter.astro';
+import UserList from '../components/UserList.astro';
 
 export const prerender = false;
 
@@ -34,136 +36,19 @@ const users: UserQueryResult = await usersQuery.getUsers({
         <Heading level={1}>用户管理</Heading>
 
         <!-- 筛选表单 -->
-        <Container width="full" background="info/10">
-            <form method="GET" class="filter-form">
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="筛选用户名（包含关键词）"
-                    value={usernameFilter || ''}
-                />
-                <select name="role">
-                    <option value="">所有角色</option>
-                    <option value="admin" selected={roleFilter === 'admin'}
-                        >管理员</option
-                    >
-                    <option value="user" selected={roleFilter === 'user'}
-                        >普通用户</option
-                    >
-                    <option
-                        value="moderator"
-                        selected={roleFilter === 'moderator'}>版主</option
-                    >
-                </select>
-                <input
-                    type="number"
-                    name="limit"
-                    placeholder="每页数量"
-                    value={limit}
-                    min="1"
-                    max="100"
-                />
-                <Button type="submit">筛选</Button>
-                <Button href="/users/create">创建</Button>
-                {
-                    (usernameFilter || roleFilter) && (
-                        <a href="/users">清除筛选</a>
-                    )
-                }
-            </form>
-        </Container>
+        <UserFilter 
+          usernameFilter={usernameFilter} 
+          roleFilter={roleFilter} 
+          limit={limit} 
+        />
 
         <!-- 用户表格 -->
-        <Container width="full" background="warning/10" flex="col" gap="md">
-            <h2>用户列表</h2>
-            <p>
-                显示第 {users.pagination.page} 页，共 {
-                    users.pagination.totalPages
-                } 页，总计
-                {users.pagination.total} 条记录
-            </p>
-
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>用户名</th>
-                        <th>邮箱</th>
-                        <th>角色</th>
-                        <th>状态</th>
-                        <th>创建时间</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        users.data.map((user) => (
-                            <tr>
-                                <td>{user.id}</td>
-                                <td class="username-cell" title={user.username}>
-                                    {user.username}
-                                </td>
-                                <td title={user.email}>{user.email}</td>
-                                <td>
-                                    <span class="role-tag">{user.role}</span>
-                                </td>
-                                <td>
-                                    <span>
-                                        {user.is_active ? '激活' : '未激活'}
-                                    </span>
-                                </td>
-                                <td>
-                                    {new Date(user.created_at).toLocaleString(
-                                        'zh-CN',
-                                    )}
-                                </td>
-                                <td>
-                                    <Link
-                                        btn
-                                        size="sm"
-                                        href={`/users/${user.id}/edit`}>
-                                        编辑
-                                    </Link>
-                                    <Button
-                                        size="sm"
-                                        data-action="delete"
-                                        data-id={user.id}>
-                                        删除
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-
-            <!-- 分页 -->
-            <Container background="error/10" contentCentered>
-                {
-                    users.pagination.page > 1 && (
-                        <Link
-                            href={`/users?page=${users.pagination.page - 1}&limit=${limit}${usernameFilter ? `&username=${encodeURIComponent(usernameFilter)}` : ''}${roleFilter ? `&role=${encodeURIComponent(roleFilter)}` : ''}`}>
-                            ← 上一页
-                        </Link>
-                    )
-                }
-
-                <span>
-                    第 {users.pagination.page} 页，共 {
-                        users.pagination.totalPages
-                    } 页
-                </span>
-
-                {
-                    users.pagination.page < users.pagination.totalPages && (
-                        <a
-                            href={`/users?page=${users.pagination.page + 1}&limit=${limit}${usernameFilter ? `&username=${encodeURIComponent(usernameFilter)}` : ''}${roleFilter ? `&role=${encodeURIComponent(roleFilter)}` : ''}`}>
-                            下一页 →
-                        </a>
-                    )
-                }
-            </Container>
-        </Container>
+        <UserList 
+          users={users} 
+          usernameFilter={usernameFilter} 
+          roleFilter={roleFilter} 
+          limit={limit} 
+        />
     </Container>
 </DashboardLayout>
 <style>

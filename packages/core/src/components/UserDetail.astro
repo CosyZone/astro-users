@@ -1,0 +1,184 @@
+---
+import type { UserRecord } from '../types/user';
+import { Link, Button } from '@coffic/cosy-ui';
+
+export interface Props {
+    user: UserRecord;
+}
+
+const { user } = Astro.props;
+---
+
+<div class="user-detail-container">
+    <div class="user-info-card">
+        <div class="user-avatar">
+            {
+                user.avatar_url ? (
+                    <img src={user.avatar_url} alt={user.username} />
+                ) : (
+                    <div class="avatar-placeholder">
+                        {user.first_name?.charAt(0) || user.username.charAt(0)}
+                    </div>
+                )
+            }
+        </div>
+
+        <div class="user-details">
+            <h2>{user.username}</h2>
+            <p class="user-email">{user.email}</p>
+
+            <div class="user-meta">
+                <div class="meta-item">
+                    <span class="meta-label">角色:</span>
+                    <span class="meta-value">
+                        <span class="role-tag">{user.role}</span>
+                    </span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="meta-label">状态:</span>
+                    <span class="meta-value">
+                        <span
+                            class={user.is_active
+                                ? 'status-active'
+                                : 'status-inactive'}>
+                            {user.is_active ? '激活' : '未激活'}
+                        </span>
+                    </span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="meta-label">注册时间:</span>
+                    <span class="meta-value">
+                        {new Date(user.created_at).toLocaleString('zh-CN')}
+                    </span>
+                </div>
+
+                <div class="meta-item">
+                    <span class="meta-label">最后更新:</span>
+                    <span class="meta-value">
+                        {new Date(user.updated_at).toLocaleString('zh-CN')}
+                    </span>
+                </div>
+
+                {
+                    user.first_name && (
+                        <div class="meta-item">
+                            <span class="meta-label">名字:</span>
+                            <span class="meta-value">{user.first_name}</span>
+                        </div>
+                    )
+                }
+
+                {
+                    user.last_name && (
+                        <div class="meta-item">
+                            <span class="meta-label">姓氏:</span>
+                            <span class="meta-value">{user.last_name}</span>
+                        </div>
+                    )
+                }
+            </div>
+
+            <div class="user-actions">
+                <Link btn href={`/users/${user.id}/edit`}> 编辑用户 </Link>
+                <Button data-action="delete" data-id={user.id}>
+                    删除用户
+                </Button>
+                <Link href="/users" btn variant="secondary">返回列表</Link>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .user-detail-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-info-card {
+        display: flex;
+        gap: 30px;
+    }
+
+    .user-avatar {
+        flex-shrink: 0;
+    }
+
+    .avatar-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .user-avatar img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-details {
+        flex: 1;
+    }
+
+    .user-email {
+        color: #6b7280;
+        margin-bottom: 20px;
+    }
+
+    .user-meta {
+        display: grid;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .meta-item {
+        display: flex;
+        gap: 10px;
+    }
+
+    .meta-label {
+        font-weight: 600;
+        width: 80px;
+    }
+
+    .meta-value {
+        flex: 1;
+    }
+
+    .role-tag {
+        background: #dbeafe;
+        color: #1d4ed8;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 500;
+    }
+
+    .status-active {
+        color: #10b981;
+        font-weight: bold;
+    }
+
+    .status-inactive {
+        color: #ef4444;
+        font-weight: bold;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+</style>

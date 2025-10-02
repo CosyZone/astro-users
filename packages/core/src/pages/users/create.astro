@@ -4,6 +4,7 @@ import { UsersQuery } from '../../lib/users';
 import AppLayout from '../layout/AppLayout.astro';
 import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
 import DashboardLayout from '../layout/DashboardLayout.astro';
+import CreateUserForm from '../../components/CreateUserForm.astro';
 
 // 处理表单提交
 let createError: string | null = null;
@@ -56,77 +57,10 @@ if (Astro.request.method === 'POST') {
 <DashboardLayout title="创建新用户" description="创建新的用户账户" lang="zh-cn">
     <Container width="full" background="none">
         <Heading level={1}>创建新用户</Heading>
-
-        <Container background="warning/10" width="full">
-            {createSuccess && <Alert type="success">用户创建成功！</Alert>}
-            {createError && <Alert type="error">{createError}</Alert>}
-
-            <form method="POST" class="create-user-form">
-                <div class="form-group">
-                    <label for="username">用户名 *</label>
-                    <input type="text" id="username" name="username" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="email">邮箱 *</label>
-                    <input type="email" id="email" name="email" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">密码 *</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="first_name">名字</label>
-                    <input type="text" id="first_name" name="first_name" />
-                </div>
-
-                <div class="form-group">
-                    <label for="last_name">姓氏</label>
-                    <input type="text" id="last_name" name="last_name" />
-                </div>
-
-                <div class="form-group">
-                    <label for="avatar_url">头像URL</label>
-                    <input
-                        type="text"
-                        id="avatar_url"
-                        name="avatar_url"
-                        placeholder="https://example.com/avatar.jpg"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="role">角色</label>
-                    <select id="role" name="role">
-                        <option value="user" selected>普通用户</option>
-                        <option value="admin">管理员</option>
-                        <option value="moderator">版主</option>
-                    </select>
-                </div>
-
-                <div class="form-group checkbox">
-                    <input
-                        type="checkbox"
-                        id="is_active"
-                        name="is_active"
-                        checked
-                    />
-                    <label for="is_active">账户激活</label>
-                </div>
-
-                <div class="form-actions">
-                    <Button type="submit">创建用户</Button>
-                    <Link href="/users" btn>取消</Link>
-                </div>
-            </form>
-        </Container>
+        <CreateUserForm 
+          createSuccess={createSuccess} 
+          createError={createError} 
+        />
     </Container>
 </DashboardLayout>
 

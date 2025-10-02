@@ -1,0 +1,114 @@
+---
+import { Alert, Button, Link, Container } from '@coffic/cosy-ui';
+
+export interface Props {
+    createSuccess?: boolean;
+    createError?: string | null;
+}
+
+const { createSuccess = false, createError = null } = Astro.props;
+---
+
+<Container background="warning/10" width="full">
+    {createSuccess && <Alert type="success">用户创建成功！</Alert>}
+    {createError && <Alert type="error">{createError}</Alert>}
+
+    <form method="POST" class="create-user-form">
+        <div class="form-group">
+            <label for="username">用户名 *</label>
+            <input type="text" id="username" name="username" required />
+        </div>
+
+        <div class="form-group">
+            <label for="email">邮箱 *</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">密码 *</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">名字</label>
+            <input type="text" id="first_name" name="first_name" />
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">姓氏</label>
+            <input type="text" id="last_name" name="last_name" />
+        </div>
+
+        <div class="form-group">
+            <label for="avatar_url">头像URL</label>
+            <input
+                type="text"
+                id="avatar_url"
+                name="avatar_url"
+                placeholder="https://example.com/avatar.jpg"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="role">角色</label>
+            <select id="role" name="role">
+                <option value="user" selected>普通用户</option>
+                <option value="admin">管理员</option>
+                <option value="moderator">版主</option>
+            </select>
+        </div>
+
+        <div class="form-group checkbox">
+            <input type="checkbox" id="is_active" name="is_active" checked />
+            <label for="is_active">账户激活</label>
+        </div>
+
+        <div class="form-actions">
+            <Button type="submit">创建用户</Button>
+            <Link href="/users" btn>取消</Link>
+        </div>
+    </form>
+</Container>
+
+<style>
+    .create-user-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .form-group.checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group.checkbox input {
+        width: auto;
+    }
+
+    .form-actions {
+        grid-column: span 2;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+</style>
