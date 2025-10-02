@@ -1,0 +1,33 @@
+---
+import DashboardLayout2 from '@/layouts/DashboardLayout2.astro';
+import { SignupForm } from '@coffic/astro-users/components';
+import { Container, Heading } from '@coffic/cosy-ui';
+
+export const prerender = true;
+
+const { lang = 'zh-cn' } = Astro.params;
+
+export const getStaticPaths = async () => {
+    return [
+        {
+            params: { lang: 'zh-cn' },
+        },
+        {
+            params: { lang: 'en' },
+        },
+    ];
+};
+
+interface Props {
+    lang: string;
+}
+---
+
+<DashboardLayout2 title="用户注册组件展示" showSidebar={true} showTOC={false}>
+    <Container>
+        <Heading level={1}>用户注册组件展示</Heading>
+        <p>以下是 astro-users 提供的注册表单组件：</p>
+
+        <SignupForm />
+    </Container>
+</DashboardLayout2>

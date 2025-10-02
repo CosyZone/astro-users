@@ -1,0 +1,52 @@
+---
+import DashboardLayout2 from '@/layouts/DashboardLayout2.astro';
+import { LoginForm } from '@coffic/astro-users/components';
+
+export const prerender = true;
+
+const { lang = 'zh-cn' } = Astro.params;
+
+export const getStaticPaths = async () => {
+    return [
+        {
+            params: { lang: 'zh-cn' },
+        },
+        {
+            params: { lang: 'en' },
+        },
+    ];
+};
+
+interface Props {
+    lang: string;
+}
+---
+
+<DashboardLayout2 title="用户登录组件展示" showSidebar={true} showTOC={false}>
+    <div class="container">
+        <h1>用户登录组件展示</h1>
+        <p>以下是 astro-users 提供的登录表单组件：</p>
+
+        <LoginForm />
+    </div>
+</DashboardLayout2>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #666;
+    }
+</style>
