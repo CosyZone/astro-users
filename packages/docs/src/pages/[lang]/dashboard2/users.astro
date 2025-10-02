@@ -1,5 +1,5 @@
 ---
-import { Button, Heading } from '@coffic/cosy-ui';
+import { Button, Container, Heading } from '@coffic/cosy-ui';
 import { UsersQuery } from '@coffic/astro-users';
 import { UserList, UserFilter } from '@coffic/astro-users/components';
 import DashboardLayout2 from '@/layouts/DashboardLayout2.astro';
@@ -20,18 +20,24 @@ const limit = parseInt(url.searchParams.get('limit') || '20');
 ---
 
 <DashboardLayout2 title="用户管理" showSidebar={true} showTOC={false}>
-    <div class="flex justify-between items-center mb-6">
-        <Heading>用户管理</Heading>
-        <Button href="/users/create">创建用户</Button>
-    </div>
+    <Container width="2xl">
+        <div class="flex justify-between items-center mb-6">
+            <Heading>用户管理</Heading>
+        </div>
 
-    <UserFilter {usernameFilter} {roleFilter} {limit} />
+        <UserFilter {usernameFilter} {roleFilter} {limit} />
 
-    <div class="mt-6">
-        <UserList users={usersResult} {usernameFilter} {roleFilter} {limit} />
-    </div>
+        <div class="mt-6">
+            <UserList
+                users={usersResult}
+                {usernameFilter}
+                {roleFilter}
+                {limit}
+            />
+        </div>
 
-    <div class="mt-4 text-sm text-gray-500">
-        总共 {usersResult.pagination.total} 个用户
-    </div>
+        <div class="mt-4 text-sm text-gray-500">
+            总共 {usersResult.pagination.total} 个用户
+        </div>
+    </Container>
 </DashboardLayout2>
