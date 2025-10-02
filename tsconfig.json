@@ -34,7 +34,11 @@
         "src/**/*.tsx",
         "src/**/*.astro",
         "packages/**/*.d.ts",
-        "packages/example/src/types/**/*.d.ts"
+        "packages/example/src/types/**/*.d.ts",
+        "packages/core/src/types/**/*.d.ts",
+        "packages/core/src/env.d.ts",
+        "packages/core/src/**/*.d.ts",
+        "types/**/*.d.ts"
     ],
     "exclude": [
         "node_modules"
