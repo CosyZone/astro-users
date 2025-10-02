@@ -1,0 +1,103 @@
+---
+import { type ISidebarItem, AppLayout } from "@coffic/cosy-ui";
+import Favicon from "@/assets/favicon.png";
+import Logo from "@/assets/logo.png";
+import { configApp } from "@/config/config.app";
+import { configProducts } from "@/config/config.products";
+import * as astroI18n from "astro:i18n";
+import Search from "astro-pagefind/components/Search";
+import WechatQR from "@/assets/qrcode.png";
+import WhatsAppQR from "@/assets/qrcode.png";
+
+interface Props {
+	title: string;
+	showTOC?: boolean;
+	showSidebar?: boolean;
+	sidebarItems?: ISidebarItem | null;
+	isArticle?: boolean;
+	verticalPadding?: string;
+	mainLayout?: "row" | "column";
+}
+
+const {
+	title,
+	showTOC = true,
+	showSidebar = true,
+	sidebarItems = null,
+	isArticle = true,
+	verticalPadding = "4xl",
+	mainLayout = "row",
+} = Astro.props;
+const currentLocale = Astro.currentLocale;
+---
+
+<AppLayout
+  enableClientRouter={true}
+  metaConfig={{
+    title: title,
+    description: 'Cosy UI - A beautiful Astro component library',
+    keywords: 'Cosy UI, Astro, component library',
+    author: 'CofficLab',
+    robots: 'index, follow',
+    favicon: Favicon,
+  }}
+  footerConfig={{
+    background: 'base-300',
+    siteName: 'Cosy UI',
+    logo: Logo,
+    homeLink: configApp.homeLink,
+    slogan:
+      currentLocale === 'zh-cn'
+        ? '优雅、高效的 Astro 组件库'
+        : 'A beautiful Astro component library',
+    company: 'CofficLab',
+    inspirationalSlogan:
+      currentLocale === 'zh-cn'
+        ? '构建美好的用户界面'
+        : 'Build a beautiful user interface',
+    socialLinks: ['https://github.com/cosyzone/cosy-ui'],
+    products: configProducts.products,
+    aboutInfo: {
+      aboutLink: 'https://coffic.cn/en/meta/about',
+      contactLink: 'https://coffic.cn/en/meta/contact',
+    },
+    legalInfo: {
+      termsLink: 'https://coffic.cn/en/meta/terms',
+      privacyLink: 'https://coffic.cn/en/meta/privacy',
+    },
+    resourcesInfo: {
+      historyLink: 'https://coffic.cn/en/meta/our-story',
+      techStackLink: 'https://coffic.cn/en/meta/tech-stack',
+    },
+    wechatQR: WechatQR,
+    whatsappQR: WhatsAppQR,
+  }}
+  headerConfig={{
+    logoHref: configApp.homeLink,
+    navItems: configApp.getNavItems(currentLocale || 'zh-cn'),
+    navPosition: 'start',
+    showThemeSwitcher: true,
+    astroI18n: astroI18n,
+  }}
+  sidebarConfig={{
+    sidebarItems: sidebarItems ? [sidebarItems] : [],
+    debug: false,
+  }}
+  mainContentConfig={{
+    py: verticalPadding,
+    isArticle: isArticle,
+    layout: mainLayout,
+    size: isArticle ? 'full' : 'lg',
+    padding: 'none',
+    showTableOfContents: showTOC,
+  }}
+  showHeader={true}
+  showFooter={true}
+  showSidebar={showSidebar}
+  loadingDelay={500}>
+  <slot />
+
+  <div slot="modal-search">
+    <Search uiOptions={{ showImages: false }} />
+  </div>
+</AppLayout>

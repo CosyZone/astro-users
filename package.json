@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm --filter example dev",
+    "build:docs": "pnpm --filter docs build",
     "test": "pnpm -r test",
     "preview": "pnpm --filter example preview"
   },
