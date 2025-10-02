@@ -1,7 +1,8 @@
 ---
-import type { UserRecord, UserQueryResult, UserStats } from '../types/user';
+import type { UserRecord, UserQueryResult } from '../types/user';
 import { UsersQuery } from '../lib/users';
 import AppLayout from './layout/AppLayout.astro';
+import { Button, Container, Heading, Link } from '@coffic/cosy-ui';
 
 export const prerender = false;
 
@@ -26,37 +27,15 @@ const users: UserQueryResult = await usersQuery.getUsers({
         role: roleFilter,
     },
 });
-
-// 获取统计数据
-const stats: UserStats = await usersQuery.getStats();
-
-// 获取用户角色统计
-const roleStats = stats.roles;
 ---
 
 <AppLayout>
-    <div class="users-page">
-        <h1>用户管理</h1>
-
-        <!-- 统计概览 -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{stats.totalUsers}</div>
-                <div class="stat-label">总用户数</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{stats.activeUsers}</div>
-                <div class="stat-label">活跃用户</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{stats.todayUsers}</div>
-                <div class="stat-label">今日新增</div>
-            </div>
-        </div>
+    <Container width="xl" background="accent/10" flex="col" gap="xl">
+        <Heading level={1}>用户管理</Heading>
 
         <!-- 筛选表单 -->
-        <div class="filter-section">
-            <h2>筛选用户</h2>
+        <Container width="full" background="info/10">
+            <Heading level={2}>筛选用户</Heading>
             <form method="GET" class="filter-form">
                 <input
                     type="text"
@@ -85,17 +64,18 @@ const roleStats = stats.roles;
                     min="1"
                     max="100"
                 />
-                <button type="submit">筛选</button>
+                <Button type="submit">筛选</Button>
+                <Button href="/users/create">创建</Button>
                 {
                     (usernameFilter || roleFilter) && (
                         <a href="/users">清除筛选</a>
                     )
                 }
             </form>
-        </div>
+        </Container>
 
         <!-- 用户表格 -->
-        <div class="users-section">
+        <Container width="full" background="warning/10" flex="col" gap="md">
             <h2>用户列表</h2>
             <p>
                 显示第 {users.pagination.page} 页，共 {
@@ -129,12 +109,7 @@ const roleStats = stats.roles;
                                     <span class="role-tag">{user.role}</span>
                                 </td>
                                 <td>
-                                    <span
-                                        class={
-                                            user.is_active
-                                                ? 'status-active'
-                                                : 'status-inactive'
-                                        }>
+                                    <span>
                                         {user.is_active ? '激活' : '未激活'}
                                     </span>
                                 </td>
@@ -144,17 +119,18 @@ const roleStats = stats.roles;
                                     )}
                                 </td>
                                 <td>
-                                    <a
-                                        href={`/users/${user.id}/edit`}
-                                        class="btn btn-secondary">
+                                    <Link
+                                        btn
+                                        size="sm"
+                                        href={`/users/${user.id}/edit`}>
                                         编辑
-                                    </a>
-                                    <button
-                                        class="btn btn-danger"
+                                    </Link>
+                                    <Button
+                                        size="sm"
                                         data-action="delete"
                                         data-id={user.id}>
                                         删除
-                                    </button>
+                                    </Button>
                                 </td>
                             </tr>
                         ))
@@ -163,13 +139,13 @@ const roleStats = stats.roles;
             </table>
 
             <!-- 分页 -->
-            <div class="pagination">
+            <Container background="error/10" contentCentered>
                 {
                     users.pagination.page > 1 && (
-                        <a
+                        <Link
                             href={`/users?page=${users.pagination.page - 1}&limit=${limit}${usernameFilter ? `&username=${encodeURIComponent(usernameFilter)}` : ''}${roleFilter ? `&role=${encodeURIComponent(roleFilter)}` : ''}`}>
                             ← 上一页
-                        </a>
+                        </Link>
                     )
                 }
 
@@ -187,69 +163,11 @@ const roleStats = stats.roles;
                         </a>
                     )
                 }
-            </div>
-        </div>
-
-        <!-- 角色统计 -->
-        <div class="roles-section">
-            <h2>用户角色统计</h2>
-            <div class="role-stats">
-                {
-                    roleStats.map((role) => (
-                        <div class="role-item">
-                            <span class="role-name">{role.role}</span>
-                            <span class="role-count">{role.count} 个用户</span>
-                        </div>
-                    ))
-                }
-            </div>
-        </div>
-    </div>
+            </Container>
+        </Container>
+    </Container>
 </AppLayout>
 <style>
-    .users-page {
-        padding: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        text-align: center;
-    }
-
-    .stat-number {
-        font-size: 2em;
-        font-weight: bold;
-        color: #2563eb;
-        margin-bottom: 5px;
-    }
-
-    .stat-label {
-        color: #6b7280;
-        font-size: 0.9em;
-    }
-
-    .filter-section,
-    .users-section,
-    .roles-section {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-
     .filter-form {
         display: flex;
         gap: 10px;
@@ -308,78 +226,5 @@ const roleStats = stats.roles;
         align-items: center;
         gap: 10px;
         margin-top: 20px;
-    }
-
-    .pagination a {
-        padding: 8px 12px;
-        background: #2563eb;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-    }
-
-    .pagination a:hover {
-        background: #1d4ed8;
-    }
-
-    .role-stats {
-        display: grid;
-        gap: 10px;
-    }
-
-    .role-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background: #f9fafb;
-        border-radius: 4px;
-    }
-
-    .role-name {
-        font-family: monospace;
-        font-size: 0.9em;
-        color: #374151;
-    }
-
-    .role-count {
-        background: #2563eb;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8em;
-        font-weight: 600;
-    }
-
-    .status-active {
-        color: #10b981;
-        font-weight: bold;
-    }
-
-    .status-inactive {
-        color: #ef4444;
-        font-weight: bold;
-    }
-
-    .btn {
-        padding: 4px 8px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        margin-right: 5px;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-secondary {
-        background: #6b7280;
-        color: white;
-    }
-
-    .btn-danger {
-        background: #ef4444;
-        color: white;
     }
 </style>

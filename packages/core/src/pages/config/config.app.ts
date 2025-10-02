@@ -33,14 +33,6 @@ export const AppConfig = {
 				href: '/users',
 				title: lang === 'zh' ? "用户" : "Users",
 			},
-			{
-				href: '/users/create',
-				title: lang === 'zh' ? "创建用户" : "Create User",
-			},
-			{
-				href: '/test-users',
-				title: lang === 'zh' ? "测试用户" : "Test Users",
-			},
 		];
 	},
 
