@@ -3,178 +3,169 @@ import type { UserRecord } from '../../types/user';
 import { UsersQuery } from '../../lib/users';
 import AppLayout from '../layout/AppLayout.astro';
 import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import DashboardLayout from '../layout/DashboardLayout.astro';
 
 // 处理表单提交
 let createError: string | null = null;
 let createSuccess = false;
 
 if (Astro.request.method === 'POST') {
-    try {
-        const formData = await Astro.request.formData();
-        const usersQuery = new UsersQuery(Astro.locals);
+  try {
+    const formData = await Astro.request.formData();
+    const usersQuery = new UsersQuery(Astro.locals);
 
-        const username = formData.get('username') as string;
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
-        const firstName = (formData.get('first_name') as string) || null;
-        const lastName = (formData.get('last_name') as string) || null;
-        const avatarUrl = (formData.get('avatar_url') as string) || null;
-        const role = (formData.get('role') as string) || 'user';
-        const isActive = formData.get('is_active') === 'on';
+    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const firstName = (formData.get('first_name') as string) || null;
+    const lastName = (formData.get('last_name') as string) || null;
+    const avatarUrl = (formData.get('avatar_url') as string) || null;
+    const role = (formData.get('role') as string) || 'user';
+    const isActive = formData.get('is_active') === 'on';
 
-        if (!username || !email || !password) {
-            createError = '用户名、邮箱和密码是必填项';
-        } else {
-            const newUser = await usersQuery.createUser({
-                username,
-                email,
-                password,
-                first_name: firstName,
-                last_name: lastName,
-                avatar_url: avatarUrl,
-                role,
-                is_active: isActive,
-            });
+    if (!username || !email || !password) {
+      createError = '用户名、邮箱和密码是必填项';
+    } else {
+      const newUser = await usersQuery.createUser({
+        username,
+        email,
+        password, // UsersQuery.createUser 会自动进行哈希处理
+        first_name: firstName,
+        last_name: lastName,
+        avatar_url: avatarUrl,
+        role,
+        is_active: isActive,
+      });
 
-            if (newUser) {
-                createSuccess = true;
-                createError = null;
-                // 重定向到用户列表
-                return Astro.redirect('/users');
-            } else {
-                createError = '创建用户失败';
-            }
-        }
-    } catch (error) {
-        console.error('Create user error:', error);
-        createError = '创建用户时发生错误: ' + (error as Error).message;
+      if (newUser) {
+        createSuccess = true;
+        createError = null;
+        // 重定向到用户列表
+        return Astro.redirect('/users');
+      } else {
+        createError = '创建用户失败';
+      }
     }
+  } catch (error) {
+    console.error('Create user error:', error);
+    createError = '创建用户时发生错误: ' + (error as Error).message;
+  }
 }
 ---
 
-<AppLayout title="创建新用户" description="创建新的用户账户">
-    <Container width="xl" background="accent/10">
-        <Heading>创建新用户</Heading>
+<DashboardLayout title="创建新用户" description="创建新的用户账户" lang="zh-cn">
+  <Container width="xl" background="accent/10">
+    <Heading>创建新用户</Heading>
 
-        <div class="form-container">
-            {createSuccess && <Alert type="success">用户创建成功！</Alert>}
-            {createError && <Alert type="error">{createError}</Alert>}
+    <div class="form-container">
+      {createSuccess && <Alert type="success">用户创建成功！</Alert>}
+      {createError && <Alert type="error">{createError}</Alert>}
 
-            <form method="POST" class="create-user-form">
-                <div class="form-group">
-                    <label for="username">用户名 *</label>
-                    <input type="text" id="username" name="username" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="email">邮箱 *</label>
-                    <input type="email" id="email" name="email" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">密码 *</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="first_name">名字</label>
-                    <input type="text" id="first_name" name="first_name" />
-                </div>
-
-                <div class="form-group">
-                    <label for="last_name">姓氏</label>
-                    <input type="text" id="last_name" name="last_name" />
-                </div>
-
-                <div class="form-group">
-                    <label for="avatar_url">头像URL</label>
-                    <input
-                        type="text"
-                        id="avatar_url"
-                        name="avatar_url"
-                        placeholder="https://example.com/avatar.jpg"
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="role">角色</label>
-                    <select id="role" name="role">
-                        <option value="user" selected>普通用户</option>
-                        <option value="admin">管理员</option>
-                        <option value="moderator">版主</option>
-                    </select>
-                </div>
-
-                <div class="form-group checkbox">
-                    <input
-                        type="checkbox"
-                        id="is_active"
-                        name="is_active"
-                        checked
-                    />
-                    <label for="is_active">账户激活</label>
-                </div>
-
-                <div class="form-actions">
-                    <Button type="submit">创建用户</Button>
-                    <Link href="/users" btn>取消</Link>
-                </div>
-            </form>
+      <form method="POST" class="create-user-form">
+        <div class="form-group">
+          <label for="username">用户名 *</label>
+          <input type="text" id="username" name="username" required />
         </div>
-    </Container>
-</AppLayout>
+
+        <div class="form-group">
+          <label for="email">邮箱 *</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">密码 *</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <div class="form-group">
+          <label for="first_name">名字</label>
+          <input type="text" id="first_name" name="first_name" />
+        </div>
+
+        <div class="form-group">
+          <label for="last_name">姓氏</label>
+          <input type="text" id="last_name" name="last_name" />
+        </div>
+
+        <div class="form-group">
+          <label for="avatar_url">头像URL</label>
+          <input
+            type="text"
+            id="avatar_url"
+            name="avatar_url"
+            placeholder="https://example.com/avatar.jpg"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="role">角色</label>
+          <select id="role" name="role">
+            <option value="user" selected>普通用户</option>
+            <option value="admin">管理员</option>
+            <option value="moderator">版主</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox">
+          <input type="checkbox" id="is_active" name="is_active" checked />
+          <label for="is_active">账户激活</label>
+        </div>
+
+        <div class="form-actions">
+          <Button type="submit">创建用户</Button>
+          <Link href="/users" btn>取消</Link>
+        </div>
+      </form>
+    </div>
+  </Container>
+</DashboardLayout>
 
 <style>
-    .form-container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+  .form-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 
-    .create-user-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
+  .create-user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
 
-    .form-group label {
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
+  .form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
 
-    .form-group input,
-    .form-group select {
-        padding: 8px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+  .form-group input,
+  .form-group select {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+  }
 
-    .form-group.checkbox {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-    }
+  .form-group.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .form-group.checkbox input {
-        width: auto;
-    }
+  .form-group.checkbox input {
+    width: auto;
+  }
 
-    .form-actions {
-        grid-column: span 2;
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-    }
+  .form-actions {
+    grid-column: span 2;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
 </style>

@@ -1,6 +1,18 @@
 import type { UserQueryOptions, UserQueryResult, UserRecord, UserStats } from '../types/user';
 import schemaSql from '../integration/schema.sql?raw';
 
+// 简单的密码哈希函数（在实际应用中应使用更安全的库如 bcrypt）
+function hashPassword(password: string): string {
+    // 注意：这是一个简化的哈希实现，仅用于演示
+    // 在生产环境中，请使用 bcrypt、scrypt 或其他安全的密码哈希库
+    return `hashed_${password}`;
+}
+
+// 验证密码
+function verifyPassword(inputPassword: string, hashedPassword: string): boolean {
+    return hashPassword(inputPassword) === hashedPassword;
+}
+
 /**
  * 用户数据查询工具类
  * 接收 Astro.locals，内部自动获取正确的数据库绑定
@@ -294,10 +306,29 @@ export class UsersQuery {
     }
 
     /**
+     * 验证用户凭据
+     */
+    async validateUserCredentials(username: string, password: string): Promise<UserRecord | null> {
+        // 先通过用户名查找用户
+        const user = await this.getUserByUsername(username);
+
+        if (user && verifyPassword(password, user.password)) {
+            // 移除密码字段再返回
+            const { password, ...userWithoutPassword } = user;
+            return userWithoutPassword as UserRecord;
+        }
+
+        return null;
+    }
+
+    /**
      * 创建新用户
      */
     async createUser(userData: Omit<UserRecord, 'id' | 'created_at' | 'updated_at'>): Promise<UserRecord | null> {
         try {
+            // 对密码进行哈希处理
+            const hashedPassword = hashPassword(userData.password);
+
             const result = await this.db.prepare(`
         INSERT INTO users (username, email, password, first_name, last_name, avatar_url, role, is_active)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -305,7 +336,7 @@ export class UsersQuery {
       `).bind(
                 userData.username,
                 userData.email,
-                userData.password,
+                hashedPassword, // 使用哈希后的密码
                 userData.first_name || null,
                 userData.last_name || null,
                 userData.avatar_url || null,
@@ -313,7 +344,13 @@ export class UsersQuery {
                 userData.is_active !== undefined ? (userData.is_active ? 1 : 0) : 1
             ).run();
 
-            return result.success ? result.results[0] : null;
+            // 移除密码字段再返回
+            if (result.success && result.results[0]) {
+                const { password, ...userWithoutPassword } = result.results[0];
+                return userWithoutPassword as UserRecord;
+            }
+
+            return null;
         } catch (error) {
             console.error('Create user error:', error);
             return null;
@@ -331,12 +368,18 @@ export class UsersQuery {
 
             Object.entries(userData).forEach(([key, value]) => {
                 if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
-                    setFields.push(`${key} = ?`);
-                    // 特殊处理布尔值字段
-                    if (key === 'is_active' && typeof value === 'boolean') {
-                        bindValues.push(value ? 1 : 0);
+                    // 特殊处理密码字段
+                    if (key === 'password' && typeof value === 'string') {
+                        setFields.push(`${key} = ?`);
+                        bindValues.push(hashPassword(value)); // 对新密码进行哈希处理
                     } else {
-                        bindValues.push(value);
+                        setFields.push(`${key} = ?`);
+                        // 特殊处理布尔值字段
+                        if (key === 'is_active' && typeof value === 'boolean') {
+                            bindValues.push(value ? 1 : 0);
+                        } else {
+                            bindValues.push(value);
+                        }
                     }
                 }
             });
@@ -359,7 +402,13 @@ export class UsersQuery {
                 .bind(...bindValues, id)
                 .run();
 
-            return result.success ? result.results[0] : null;
+            // 移除密码字段再返回
+            if (result.success && result.results[0]) {
+                const { password, ...userWithoutPassword } = result.results[0];
+                return userWithoutPassword as UserRecord;
+            }
+
+            return null;
         } catch (error) {
             console.error('Update user error:', error);
             return null;

@@ -216,7 +216,11 @@ export default class LinkConfig {
 	}
 
 	static getLoginPageLink(lang: string): string {
-		return `/${lang}/auth/signin`;
+		return `/login`;
+	}
+
+	static getSignupLink(lang: string): string {
+		return `/signup`;
 	}
 
 	static getDashboardLink(lang: string): string {

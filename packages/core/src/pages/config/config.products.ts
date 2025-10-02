@@ -7,8 +7,12 @@ export const ProductConfig = {
 			href: LinkConfig.getLoginPageLink("zh-cn"),
 		},
 		{
-			name: "控制台",
-			href: LinkConfig.getDashboardLink("zh-cn"),
+			name: "注册",
+			href: LinkConfig.getSignupLink("zh-cn"),
+		},
+		{
+			name: "用户管理",
+			href: '/users',
 		},
 	],
 };

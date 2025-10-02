@@ -17,16 +17,12 @@ const getDashboardSidebar = (lang: string): ISidebarItem => {
     text: lang === 'zh-cn' ? '控制台' : 'Dashboard',
     items: [
       {
-        href: `/${lang}/dashboard`,
-        text: lang === 'zh-cn' ? '首页' : 'Home',
-      },
-      {
-        href: `/${lang}/dashboard/users`,
+        href: `/users`,
         text: lang === 'zh-cn' ? '用户管理' : 'User Management',
       },
       {
-        href: `/${lang}/dashboard/visit-logs`,
-        text: lang === 'zh-cn' ? '访问日志' : 'Visit Logs',
+        href: `/users/create`,
+        text: lang === 'zh-cn' ? '创建用户' : 'Create User',
       },
     ],
   };

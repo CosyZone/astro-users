@@ -19,6 +19,7 @@ interface Props {
     showSidebar?: boolean;
     showTableOfContents?: boolean;
     layout?: 'column' | 'row';
+    showHeader?: boolean;
 }
 
 const {
@@ -28,9 +29,10 @@ const {
     sidebar,
     py = 'none',
     pt = '4xl',
-    showSidebar = false,
     layout = 'column',
     showTableOfContents = false,
+    showSidebar = true,
+    showHeader = true,
 } = Astro.props as Props;
 
 const lang = LanguageUtil.getCurrentLanguage(Astro);
@@ -38,7 +40,7 @@ const lang = LanguageUtil.getCurrentLanguage(Astro);
 
 <CosyLayout
     showHeader={true}
-    showSidebar={showSidebar && sidebar !== null}
+    showSidebar={showSidebar}
     showFooter={true}
     loadingDelay={800}
     metaConfig={{
@@ -75,6 +77,7 @@ const lang = LanguageUtil.getCurrentLanguage(Astro);
     }}
     headerConfig={{
         navItems: AppConfig.getNavItems(lang),
+        navPosition: 'start',
     }}>
     <slot />
 </CosyLayout>

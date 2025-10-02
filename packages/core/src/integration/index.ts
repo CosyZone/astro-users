@@ -37,6 +37,17 @@ export default function astroUsersIntegration(options: AstroUsersOptions = {}): 
           pattern: '/users/[id]/edit',
           entrypoint: '@coffic/astro-users/src/pages/users/[id]/edit.astro'
         });
+
+        // 注入用户认证路由
+        injectRoute({
+          pattern: '/signup',
+          entrypoint: '@coffic/astro-users/src/pages/signup.astro'
+        });
+
+        injectRoute({
+          pattern: '/login',
+          entrypoint: '@coffic/astro-users/src/pages/login.astro'
+        });
       },
     },
   };

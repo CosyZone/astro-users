@@ -60,7 +60,21 @@ export const PUT: APIRoute = async ({ locals, params, request }) => {
         }
 
         const userData = await request.json();
-        const updatedUser = await usersQuery.updateUser(id, userData);
+
+        // 准备更新数据
+        const updateData: Partial<Omit<UserRecord, 'id' | 'created_at' | 'updated_at'>> = {};
+
+        // 只添加提供的字段
+        if (userData.username !== undefined) updateData.username = userData.username;
+        if (userData.email !== undefined) updateData.email = userData.email;
+        if (userData.first_name !== undefined) updateData.first_name = userData.first_name;
+        if (userData.last_name !== undefined) updateData.last_name = userData.last_name;
+        if (userData.avatar_url !== undefined) updateData.avatar_url = userData.avatar_url;
+        if (userData.role !== undefined) updateData.role = userData.role;
+        if (userData.is_active !== undefined) updateData.is_active = userData.is_active;
+        if (userData.password !== undefined) updateData.password = userData.password; // UsersQuery.updateUser 会自动进行哈希处理
+
+        const updatedUser = await usersQuery.updateUser(id, updateData);
 
         if (updatedUser) {
             return new Response(JSON.stringify(updatedUser), {

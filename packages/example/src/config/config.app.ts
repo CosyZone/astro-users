@@ -25,22 +25,6 @@ export const AppConfig = {
 				href: '/',
 				title: lang === 'zh' ? "首页" : "Home",
 			},
-			{
-				href: '/admin',
-				title: lang === 'zh' ? "管理" : "Admin",
-			},
-			{
-				href: '/users',
-				title: lang === 'zh' ? "用户" : "Users",
-			},
-			{
-				href: '/users/create',
-				title: lang === 'zh' ? "创建用户" : "Create User",
-			},
-			{
-				href: '/test-users',
-				title: lang === 'zh' ? "测试用户" : "Test Users",
-			},
 		];
 	},
 

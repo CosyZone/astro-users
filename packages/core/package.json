@@ -8,6 +8,8 @@
     ".": "./index.ts",
     "./api-client": "./src/lib/api-client.ts",
     "./src/pages/users.astro": "./src/pages/users.astro",
+    "./src/pages/login.astro": "./src/pages/login.astro",
+    "./src/pages/signup.astro": "./src/pages/signup.astro",
     "./src/pages/users/create.astro": "./src/pages/users/create.astro",
     "./src/pages/users/[id]/index.astro": "./src/pages/users/[id]/index.astro",
     "./src/pages/users/[id]/edit.astro": "./src/pages/users/[id]/edit.astro"

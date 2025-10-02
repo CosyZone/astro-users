@@ -2,7 +2,7 @@
 import type { UserRecord } from '../../../types/user';
 import { UsersQuery } from '../../../lib/users';
 import AppLayout from '../../layout/AppLayout.astro';
-import { Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
 
 export const prerender = false;
 
@@ -39,16 +39,27 @@ if (Astro.request.method === 'POST') {
         const avatarUrl = (formData.get('avatar_url') as string) || null;
         const role = (formData.get('role') as string) || 'user';
         const isActive = formData.get('is_active') === 'on';
+        const password = (formData.get('password') as string) || undefined;
 
-        const updatedUser = await usersQuery.updateUser(userId, {
+        // 准备更新数据
+        const updateData: Partial<
+            Omit<UserRecord, 'id' | 'created_at' | 'updated_at'>
+        > = {
             username,
             email,
             first_name: firstName,
             last_name: lastName,
             avatar_url: avatarUrl,
             role,
-            is_active: isActive,
-        });
+            is_active: isActive === true,
+        };
+
+        // 只有当提供了新密码时才更新密码
+        if (password && password.length > 0) {
+            updateData.password = password;
+        }
+
+        const updatedUser = await usersQuery.updateUser(userId, updateData);
 
         if (updatedUser) {
             updateSuccess = true;
@@ -66,111 +77,124 @@ if (Astro.request.method === 'POST') {
 <AppLayout
     title={`编辑用户 - ${user.username}`}
     description={`编辑用户 ${user.username} 的信息`}>
-    <Container background="info/10">
+    <Container width="xl" background="accent/10">
         <Heading level={1}>编辑用户</Heading>
 
-        <div class="form-container">
-            {
-                updateSuccess && (
-                    <div class="alert alert-success">用户信息更新成功！</div>
-                )
-            }
-            {updateError && <div class="alert alert-error">{updateError}</div>}
+        <div class="edit-user-page">
+            <div class="form-container">
+                {
+                    updateSuccess && (
+                        <Alert type="success">用户信息更新成功！</Alert>
+                    )
+                }
+                {updateError && <Alert type="error">{updateError}</Alert>}
 
-            <form method="POST" class="edit-user-form">
-                <div class="form-group">
-                    <label for="username">用户名 *</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={user.username}
-                        required
-                    />
-                </div>
+                <form method="POST" class="edit-user-form">
+                    <div class="form-group">
+                        <label for="username">用户名 *</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            value={user.username}
+                            required
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">邮箱 *</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={user.email}
-                        required
-                    />
-                </div>
+                    <div class="form-group">
+                        <label for="email">邮箱 *</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={user.email}
+                            required
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="first_name">名字</label>
-                    <input
-                        type="text"
-                        id="first_name"
-                        name="first_name"
-                        value={user.first_name || ''}
-                    />
-                </div>
+                    <div class="form-group">
+                        <label for="first_name">名字</label>
+                        <input
+                            type="text"
+                            id="first_name"
+                            name="first_name"
+                            value={user.first_name || ''}
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="last_name">姓氏</label>
-                    <input
-                        type="text"
-                        id="last_name"
-                        name="last_name"
-                        value={user.last_name || ''}
-                    />
-                </div>
+                    <div class="form-group">
+                        <label for="last_name">姓氏</label>
+                        <input
+                            type="text"
+                            id="last_name"
+                            name="last_name"
+                            value={user.last_name || ''}
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="avatar_url">头像URL</label>
-                    <input
-                        type="text"
-                        id="avatar_url"
-                        name="avatar_url"
-                        value={user.avatar_url || ''}
-                        placeholder="https://example.com/avatar.jpg"
-                    />
-                </div>
+                    <div class="form-group">
+                        <label for="avatar_url">头像URL</label>
+                        <input
+                            type="text"
+                            id="avatar_url"
+                            name="avatar_url"
+                            value={user.avatar_url || ''}
+                            placeholder="https://example.com/avatar.jpg"
+                        />
+                    </div>
 
-                <div class="form-group">
-                    <label for="role">角色</label>
-                    <select id="role" name="role">
-                        <option value="user" selected={user.role === 'user'}
-                            >普通用户</option
+                    <div class="form-group">
+                        <label for="password">新密码（留空则不更改）</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="留空则不更改密码"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">角色</label>
+                        <select id="role" name="role">
+                            <option value="user" selected={user.role === 'user'}
+                                >普通用户</option
+                            >
+                            <option
+                                value="admin"
+                                selected={user.role === 'admin'}>管理员</option
+                            >
+                            <option
+                                value="moderator"
+                                selected={user.role === 'moderator'}
+                                >版主</option
+                            >
+                        </select>
+                    </div>
+
+                    <div class="form-group checkbox">
+                        <input
+                            type="checkbox"
+                            id="is_active"
+                            name="is_active"
+                            checked={user.is_active}
+                        />
+                        <label for="is_active">账户激活</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <Button type="submit" variant="primary">更新用户</Button
                         >
-                        <option value="admin" selected={user.role === 'admin'}
-                            >管理员</option
-                        >
-                        <option
-                            value="moderator"
-                            selected={user.role === 'moderator'}>版主</option
-                        >
-                    </select>
-                </div>
-
-                <div class="form-group checkbox">
-                    <input
-                        type="checkbox"
-                        id="is_active"
-                        name="is_active"
-                        checked={user.is_active}
-                    />
-                    <label for="is_active">账户激活</label>
-                </div>
-
-                <div class="form-actions">
-                    <Button type="submit">更新用户</Button>
-                    <Link btn href="/users">取消</Link>
-                </div>
-            </form>
+                        <Link href="/users" btn>取消</Link>
+                    </div>
+                </form>
+            </div>
         </div>
     </Container>
 </AppLayout>
 
 <style>
     .edit-user-page {
-        padding: 20px;
-        max-width: 600px;
-        margin: 0 auto;
+        padding: 20px 0;
     }
 
     .form-container {

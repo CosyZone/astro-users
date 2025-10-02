@@ -1,8 +1,8 @@
 ---
 import type { UserRecord, UserQueryResult } from '../types/user';
 import { UsersQuery } from '../lib/users';
-import AppLayout from './layout/AppLayout.astro';
 import { Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import DashboardLayout from './layout/DashboardLayout.astro';
 
 export const prerender = false;
 
@@ -29,7 +29,7 @@ const users: UserQueryResult = await usersQuery.getUsers({
 });
 ---
 
-<AppLayout>
+<DashboardLayout title="用户管理" description="用户管理页面" lang="zh">
     <Container width="xl" background="accent/10" flex="col" gap="xl">
         <Heading level={1}>用户管理</Heading>
 
@@ -166,7 +166,7 @@ const users: UserQueryResult = await usersQuery.getUsers({
             </Container>
         </Container>
     </Container>
-</AppLayout>
+</DashboardLayout>
 <style>
     .filter-form {
         display: flex;
