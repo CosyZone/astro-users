@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
+    "build:example": "pnpm --filter example build",
     "dev": "pnpm --filter example dev",
-    "build:docs": "pnpm --filter docs build",
-    "test": "pnpm -r test",
-    "preview": "pnpm --filter example preview"
+    "build:docs": "pnpm --filter docs build"
   },
   "packageManager": "pnpm@10.12.1",
   "engines": {

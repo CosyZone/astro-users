@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { UsersQuery } from '../../../lib/users';
-import type { UserRecord } from 'src/types/user';
+import type { UserRecord } from '../../../types/user';
 
 // 根据ID获取单个用户
 export const GET: APIRoute = async ({ locals, params }) => {

@@ -6,6 +6,7 @@
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
+    "./components": "./src/components",
     "./api-client": "./src/lib/api-client.ts",
     "./src/pages/users.astro": "./src/pages/users.astro",
     "./src/pages/login.astro": "./src/pages/login.astro",
@@ -14,15 +15,12 @@
     "./src/pages/users/[id]/index.astro": "./src/pages/users/[id]/index.astro",
     "./src/pages/users/[id]/edit.astro": "./src/pages/users/[id]/edit.astro"
   },
-  "types": "index.ts",
   "keywords": [
     "astro-integration",
     "user-management",
     "cloudflare",
     "d1-database"
   ],
-  "author": "Coffic",
-  "license": "MIT",
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "astro": "^5.14.1",
@@ -39,12 +37,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Coffic/astro-users.git"
+    "url": "https://github.com/CosyZone/astro-users.git"
   },
-  "bugs": {
-    "url": "https://github.com/Coffic/astro-users/issues"
-  },
-  "homepage": "https://github.com/Coffic/astro-users#readme",
   "dependencies": {
     "@coffic/cosy-ui": "^0.9.63"
   }

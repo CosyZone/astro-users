@@ -1,22 +1,11 @@
 {
     "name": "example",
-    "version": "1.0.0",
-    "description": "Example project for astro-users integration",
     "type": "module",
     "scripts": {
         "dev": "astro dev",
-        "start": "astro dev",
         "build": "astro build",
-        "preview": "astro build && wrangler dev ./dist/_worker.js/index.js",
-        "astro": "astro"
+        "preview": "astro build && wrangler dev ./dist/_worker.js/index.js"
     },
-    "keywords": [
-        "astro",
-        "example",
-        "user-management"
-    ],
-    "author": "Your Name",
-    "license": "MIT",
     "dependencies": {
         "@astrojs/cloudflare": "^12.6.9",
         "@coffic/astro-users": "workspace:*",

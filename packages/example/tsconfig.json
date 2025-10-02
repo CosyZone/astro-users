@@ -1,5 +1,5 @@
 {
-  "extends": "astro/tsconfigs/base",
+  "extends": "astro/tsconfigs/strict",
   "include": [
     ".astro/types.d.ts",
     "**/*"
@@ -11,30 +11,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@layouts/*": [
-        "src/layouts/*"
-      ],
-      "@interface/*": [
-        "src/interface/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@database/*": [
-        "src/database/*"
+        "./src/*"
       ]
     },
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "types": [
+      "node"
+    ]
   }
 }

@@ -12,6 +12,3 @@ export type {
     UserQueryResult,
     UserStats
 } from './src/types/user';
-
-// 导出组件
-export * from './src/components/index.ts';
