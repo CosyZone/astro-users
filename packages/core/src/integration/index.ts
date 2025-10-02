@@ -20,33 +20,33 @@ export default function astroUsersIntegration(options: AstroUsersOptions = {}): 
         // 注入用户管理页面路由
         injectRoute({
           pattern: '/users',
-          entrypoint: '@coffic/astro-users/src/pages/users.astro'
+          entrypoint: '@coffic/astro-users/pages/users.astro'
         });
 
         injectRoute({
           pattern: '/users/create',
-          entrypoint: '@coffic/astro-users/src/pages/users/create.astro'
+          entrypoint: '@coffic/astro-users/pages/users/create.astro'
         });
 
         injectRoute({
           pattern: '/users/[id]',
-          entrypoint: '@coffic/astro-users/src/pages/users/[id]/index.astro'
+          entrypoint: '@coffic/astro-users/pages/users/[id]/index.astro'
         });
 
         injectRoute({
           pattern: '/users/[id]/edit',
-          entrypoint: '@coffic/astro-users/src/pages/users/[id]/edit.astro'
+          entrypoint: '@coffic/astro-users/pages/users/[id]/edit.astro'
         });
 
         // 注入用户认证路由
         injectRoute({
           pattern: '/signup',
-          entrypoint: '@coffic/astro-users/src/pages/signup.astro'
+          entrypoint: '@coffic/astro-users/pages/signup.astro'
         });
 
         injectRoute({
           pattern: '/login',
-          entrypoint: '@coffic/astro-users/src/pages/login.astro'
+          entrypoint: '@coffic/astro-users/pages/login.astro'
         });
       },
     },

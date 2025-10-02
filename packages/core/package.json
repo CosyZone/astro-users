@@ -8,12 +8,12 @@
     ".": "./index.ts",
     "./components": "./src/components",
     "./api-client": "./src/lib/api-client.ts",
-    "./src/pages/users.astro": "./src/pages/users.astro",
-    "./src/pages/login.astro": "./src/pages/login.astro",
-    "./src/pages/signup.astro": "./src/pages/signup.astro",
-    "./src/pages/users/create.astro": "./src/pages/users/create.astro",
-    "./src/pages/users/[id]/index.astro": "./src/pages/users/[id]/index.astro",
-    "./src/pages/users/[id]/edit.astro": "./src/pages/users/[id]/edit.astro"
+    "./pages/users.astro": "./src/pages/users.astro",
+    "./pages/login.astro": "./src/pages/login.astro",
+    "./pages/signup.astro": "./src/pages/signup.astro",
+    "./pages/users/create.astro": "./src/pages/users/create.astro",
+    "./pages/users/[id]/index.astro": "./src/pages/users/[id]/index.astro",
+    "./pages/users/[id]/edit.astro": "./src/pages/users/[id]/edit.astro"
   },
   "keywords": [
     "astro-integration",
