@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { UsersQuery } from '../../../lib/users';
 
+export const prerender = false
+
 // 用户注册 API 端点
 export const POST: APIRoute = async ({ locals, request }) => {
     try {

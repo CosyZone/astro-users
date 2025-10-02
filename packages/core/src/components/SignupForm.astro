@@ -24,7 +24,7 @@ const { signupSuccess = false, signupError = null } = Astro.props;
 
     {
         !signupSuccess && (
-            <form method="POST" class="signup-form">
+            <form class="signup-form">
                 <div class="form-group">
                     <label for="username">用户名 *</label>
                     <input type="text" id="username" name="username" required />
@@ -68,7 +68,7 @@ const { signupSuccess = false, signupError = null } = Astro.props;
                 </div>
 
                 <div class="form-actions">
-                    <Button type="submit" variant="primary">
+                    <Button type="submit" variant="primary" id="signup-button">
                         注册
                     </Button>
                     <Link href="/users" btn>
@@ -79,6 +79,118 @@ const { signupSuccess = false, signupError = null } = Astro.props;
         )
     }
 </div>
+
+<script>
+    // 客户端处理表单提交
+    if (typeof window !== 'undefined') {
+        const form = document.querySelector('.signup-form');
+        const signupButton = document.getElementById('signup-button');
+
+        if (form && signupButton) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form as HTMLFormElement);
+
+                // 获取表单数据
+                const userData = {
+                    username: (formData.get('username') || '')
+                        .toString()
+                        .trim(),
+                    email: (formData.get('email') || '').toString().trim(),
+                    first_name:
+                        (formData.get('first_name') || '').toString().trim() ||
+                        undefined,
+                    last_name:
+                        (formData.get('last_name') || '').toString().trim() ||
+                        undefined,
+                    password: (formData.get('password') || '')
+                        .toString()
+                        .trim(),
+                    confirm_password: (formData.get('confirm_password') || '')
+                        .toString()
+                        .trim(),
+                };
+
+                // 基本验证
+                if (
+                    !userData.username ||
+                    !userData.email ||
+                    !userData.password ||
+                    !userData.confirm_password
+                ) {
+                    const event = new CustomEvent('signup-error', {
+                        detail: '所有字段都是必填的',
+                    });
+                    window.dispatchEvent(event);
+                    return;
+                }
+
+                if (userData.password !== userData.confirm_password) {
+                    const event = new CustomEvent('signup-error', {
+                        detail: '密码和确认密码不匹配',
+                    });
+                    window.dispatchEvent(event);
+                    return;
+                }
+
+                if (userData.password.length < 6) {
+                    const event = new CustomEvent('signup-error', {
+                        detail: '密码长度至少为6个字符',
+                    });
+                    window.dispatchEvent(event);
+                    return;
+                }
+
+                // 禁用提交按钮防止重复提交
+                (signupButton as HTMLButtonElement).disabled = true;
+                signupButton.textContent = '注册中...';
+
+                try {
+                    // 调用注册 API，发送 JSON 数据
+                    const response = await fetch('/api/auth/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: userData.username,
+                            email: userData.email,
+                            first_name: userData.first_name,
+                            last_name: userData.last_name,
+                            password: userData.password,
+                        }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // 注册成功，触发成功事件
+                        const event = new CustomEvent('signup-success', {
+                            detail: result,
+                        });
+                        window.dispatchEvent(event);
+                    } else {
+                        // 注册失败，触发错误事件
+                        const event = new CustomEvent('signup-error', {
+                            detail: result.error || '注册失败',
+                        });
+                        window.dispatchEvent(event);
+                    }
+                } catch (error) {
+                    console.error('注册请求失败:', error);
+                    const event = new CustomEvent('signup-error', {
+                        detail: '网络错误，请稍后重试',
+                    });
+                    window.dispatchEvent(event);
+                } finally {
+                    // 恢复提交按钮状态
+                    (signupButton as HTMLButtonElement).disabled = false;
+                    signupButton.textContent = '注册';
+                }
+            });
+        }
+    }
+</script>
 
 <style>
     .signup-container {

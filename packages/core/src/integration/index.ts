@@ -48,6 +48,17 @@ export default function astroUsersIntegration(options: AstroUsersOptions = {}): 
           pattern: '/login',
           entrypoint: '@coffic/astro-users/pages/login.astro'
         });
+
+        // 注入API路由
+        injectRoute({
+          pattern: '/api/auth/signup',
+          entrypoint: '@coffic/astro-users/api/auth/signup'
+        });
+
+        injectRoute({
+          pattern: '/api/auth/login',
+          entrypoint: '@coffic/astro-users/api/auth/login'
+        });
       },
     },
   };
