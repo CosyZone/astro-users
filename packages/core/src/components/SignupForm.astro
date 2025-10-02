@@ -2,82 +2,82 @@
 import { Alert, Button, Link } from '@coffic/cosy-ui';
 
 export interface Props {
-    signupSuccess?: boolean;
-    signupError?: string | null;
+  signupSuccess?: boolean;
+  signupError?: string | null;
 }
 
 const { signupSuccess = false, signupError = null } = Astro.props;
 ---
 
 <div class="signup-container">
-    {
-        signupSuccess && (
-            <Alert type="success">
-                <p>注册成功！</p>
-                <p>
-                    <Link href="/users">点击这里</Link> 查看用户列表
-                </p>
-            </Alert>
-        )
-    }
-    {signupError && <Alert type="error">{signupError}</Alert>}
+  {
+    signupSuccess && (
+      <Alert type="success">
+        <p>注册成功！</p>
+        <p>
+          <Link href="/users">点击这里</Link> 查看用户列表
+        </p>
+      </Alert>
+    )
+  }
+  {signupError && <Alert type="error">{signupError}</Alert>}
 
-    {
-        !signupSuccess && (
-            <form class="signup-form">
-                <div class="form-group">
-                    <label for="username">用户名 *</label>
-                    <input type="text" id="username" name="username" required />
-                </div>
+  {
+    !signupSuccess && (
+      <form class="signup-form">
+        <div class="form-group">
+          <label for="username">用户名 *</label>
+          <input type="text" id="username" name="username" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="email">邮箱 *</label>
-                    <input type="email" id="email" name="email" required />
-                </div>
+        <div class="form-group">
+          <label for="email">邮箱 *</label>
+          <input type="email" id="email" name="email" required />
+        </div>
 
-                <div class="form-group">
-                    <label for="first_name">名字</label>
-                    <input type="text" id="first_name" name="first_name" />
-                </div>
+        <div class="form-group">
+          <label for="first_name">名字</label>
+          <input type="text" id="first_name" name="first_name" />
+        </div>
 
-                <div class="form-group">
-                    <label for="last_name">姓氏</label>
-                    <input type="text" id="last_name" name="last_name" />
-                </div>
+        <div class="form-group">
+          <label for="last_name">姓氏</label>
+          <input type="text" id="last_name" name="last_name" />
+        </div>
 
-                <div class="form-group">
-                    <label for="password">密码 *</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        minlength="6"
-                    />
-                    <small>密码长度至少为6个字符</small>
-                </div>
+        <div class="form-group">
+          <label for="password">密码 *</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+          />
+          <small>密码长度至少为6个字符</small>
+        </div>
 
-                <div class="form-group">
-                    <label for="confirm_password">确认密码 *</label>
-                    <input
-                        type="password"
-                        id="confirm_password"
-                        name="confirm_password"
-                        required
-                    />
-                </div>
+        <div class="form-group">
+          <label for="confirm_password">确认密码 *</label>
+          <input
+            type="password"
+            id="confirm_password"
+            name="confirm_password"
+            required
+          />
+        </div>
 
-                <div class="form-actions">
-                    <Button type="submit" variant="primary" id="signup-button">
-                        注册
-                    </Button>
-                    <Link href="/users" btn>
-                        取消
-                    </Link>
-                </div>
-            </form>
-        )
-    }
+        <div class="form-actions">
+          <Button type="submit" variant="primary" id="signup-button">
+            注册
+          </Button>
+          <Link href="/users" btn>
+            取消
+          </Link>
+        </div>
+      </form>
+    )
+  }
 </div>
 
 <script>
@@ -118,26 +118,20 @@ const { signupSuccess = false, signupError = null } = Astro.props;
                     !userData.password ||
                     !userData.confirm_password
                 ) {
-                    const event = new CustomEvent('signup-error', {
-                        detail: '所有字段都是必填的',
-                    });
-                    window.dispatchEvent(event);
+                    // 显示错误信息
+                    showError('所有字段都是必填的');
                     return;
                 }
 
                 if (userData.password !== userData.confirm_password) {
-                    const event = new CustomEvent('signup-error', {
-                        detail: '密码和确认密码不匹配',
-                    });
-                    window.dispatchEvent(event);
+                    // 显示错误信息
+                    showError('密码和确认密码不匹配');
                     return;
                 }
 
                 if (userData.password.length < 6) {
-                    const event = new CustomEvent('signup-error', {
-                        detail: '密码长度至少为6个字符',
-                    });
-                    window.dispatchEvent(event);
+                    // 显示错误信息
+                    showError('密码长度至少为6个字符');
                     return;
                 }
 
@@ -146,42 +140,55 @@ const { signupSuccess = false, signupError = null } = Astro.props;
                 signupButton.textContent = '注册中...';
 
                 try {
-                    // 调用注册 API，发送 JSON 数据
-                    const response = await fetch('/api/auth/signup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            username: userData.username,
-                            email: userData.email,
-                            first_name: userData.first_name,
-                            last_name: userData.last_name,
-                            password: userData.password,
-                        }),
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        // 注册成功，触发成功事件
-                        const event = new CustomEvent('signup-success', {
-                            detail: result,
-                        });
-                        window.dispatchEvent(event);
+                    // 检查是否在展示页面上（通过检查是否存在特定的展示容器）
+                    const isDemoPage = document.querySelector('.markdown-content') !== null;
+                    
+                    if (isDemoPage) {
+                        // 在展示页面上使用模拟逻辑
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        // 模拟随机成功或失败
+                        const isSuccess = Math.random() > 0.5;
+                        
+                        if (isSuccess) {
+                            // 注册成功，显示成功消息
+                            showSuccess();
+                        } else {
+                            // 注册失败，显示错误信息
+                            showError('用户名已存在');
+                        }
                     } else {
-                        // 注册失败，触发错误事件
-                        const event = new CustomEvent('signup-error', {
-                            detail: result.error || '注册失败',
+                        // 调用真实的注册 API
+                        const response = await fetch('/api/auth/signup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                username: userData.username,
+                                email: userData.email,
+                                first_name: userData.first_name,
+                                last_name: userData.last_name,
+                                password: userData.password,
+                            }),
                         });
-                        window.dispatchEvent(event);
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            // 注册成功，触发成功事件
+                            const event = new CustomEvent('signup-success', {
+                                detail: result,
+                            });
+                            window.dispatchEvent(event);
+                        } else {
+                            // 注册失败，显示错误信息
+                            showError(result.error || '注册失败');
+                        }
                     }
                 } catch (error) {
                     console.error('注册请求失败:', error);
-                    const event = new CustomEvent('signup-error', {
-                        detail: '网络错误，请稍后重试',
-                    });
-                    window.dispatchEvent(event);
+                    showError('网络错误，请稍后重试');
                 } finally {
                     // 恢复提交按钮状态
                     (signupButton as HTMLButtonElement).disabled = false;
@@ -189,51 +196,115 @@ const { signupSuccess = false, signupError = null } = Astro.props;
                 }
             });
         }
+        
+        // 显示成功消息
+        function showSuccess() {
+            const form = document.querySelector('.signup-form');
+            if (form && form.parentNode) {
+                // 创建成功消息
+                const successMessage = document.createElement('div');
+                successMessage.className = 'alert success';
+                successMessage.innerHTML = `
+                    <div class="alert-content">
+                        <p>注册成功！</p>
+                        <p><a href="/users">点击这里</a> 查看用户列表</p>
+                    </div>
+                `;
+                form.parentNode.replaceChild(successMessage, form);
+            }
+        }
+        
+        // 显示错误信息
+        function showError(message: string) {
+            const errorAlert = document.createElement('div');
+            errorAlert.className = 'alert error';
+            errorAlert.innerHTML = `
+                <div class="alert-content">
+                    <p>${message}</p>
+                </div>
+            `;
+
+            // 将错误信息插入到表单之前
+            const form = document.querySelector('.signup-form');
+            if (form && form.parentNode) {
+                // 移除之前的错误信息
+                const existingAlert = document.querySelector('.alert.error');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+
+                form.parentNode.insertBefore(errorAlert, form);
+            }
+        }
+        
+        // 监听signup-success事件（从外部触发）
+        window.addEventListener('signup-success', (event) => {
+            const form = document.querySelector('.signup-form');
+            if (form && form.parentNode) {
+                // 显示成功消息
+                const successMessage = document.createElement('div');
+                successMessage.className = 'alert success';
+                successMessage.innerHTML = `
+                    <div class="alert-content">
+                        <p>注册成功！</p>
+                        <p><a href="/users">点击这里</a> 查看用户列表</p>
+                    </div>
+                `;
+                form.parentNode.replaceChild(successMessage, form);
+            }
+        });
+
+        // 监听signup-error事件
+        window.addEventListener('signup-error', (event) => {
+            // 显示错误信息
+            const customEvent = event as CustomEvent;
+            showError(customEvent.detail || '注册失败');
+        });
     }
 </script>
 
 <style>
-    .signup-container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 20px 0;
-    }
+  .signup-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+  }
 
-    .signup-form {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
+  .signup-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
 
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
 
-    .form-group label {
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
+  .form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
 
-    .form-group input {
-        padding: 8px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        font-size: 14px;
-    }
+  .form-group input {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+  }
 
-    .form-group small {
-        margin-top: 4px;
-        color: #6b7280;
-        font-size: 0.875rem;
-    }
+  .form-group small {
+    margin-top: 4px;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
 
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
 </style>

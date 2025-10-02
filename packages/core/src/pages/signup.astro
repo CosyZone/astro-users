@@ -1,13 +1,9 @@
 ---
 import AppLayout from './layout/AppLayout.astro';
-import { Alert, Button, Container, Heading, Link } from '@coffic/cosy-ui';
+import { Container, Heading, Link } from '@coffic/cosy-ui';
 import SignupForm from '../components/SignupForm.astro';
 
 export const prerender = false;
-
-// 状态管理
-let signupError: string | null = null;
-let signupSuccess = false;
 ---
 
 <AppLayout title="用户注册" description="创建新的用户账户" showSidebar={false}>
@@ -16,98 +12,6 @@ let signupSuccess = false;
 
         <Link href="/login" btn> 登录 </Link>
 
-        <SignupForm signupSuccess={signupSuccess} signupError={signupError} />
-
-        <script>
-            // 处理注册成功事件
-            window.addEventListener('signup-success', (event) => {
-                // 重新加载页面以显示成功状态
-                window.location.reload();
-            });
-
-            // 处理注册错误事件
-            window.addEventListener('signup-error', (event) => {
-                // 显示错误信息
-                const customEvent = event as CustomEvent;
-                const errorAlert = document.createElement('div');
-                errorAlert.className = 'alert error';
-                errorAlert.innerHTML = `
-                    <div class="alert-content">
-                        <p>${customEvent.detail || '注册失败'}</p>
-                    </div>
-                `;
-
-                // 将错误信息插入到表单之前
-                const form = document.querySelector('.signup-form');
-                if (form && form.parentNode) {
-                    // 移除之前的错误信息
-                    const existingAlert =
-                        document.querySelector('.alert.error');
-                    if (existingAlert) {
-                        existingAlert.remove();
-                    }
-
-                    form.parentNode.insertBefore(errorAlert, form);
-                }
-            });
-        </script>
+        <SignupForm />
     </Container>
 </AppLayout>
-
-<style>
-    .signup-container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin: 20px 0;
-    }
-
-    .signup-form {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-group label {
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
-
-    .form-group input {
-        padding: 8px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .form-group small {
-        margin-top: 4px;
-        color: #6b7280;
-        font-size: 0.875rem;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-
-    .alert {
-        padding: 12px 16px;
-        border-radius: 4px;
-        margin-bottom: 16px;
-    }
-
-    .alert.error {
-        background-color: #fee2e2;
-        border: 1px solid #fecaca;
-        color: #991b1b;
-    }
-</style>
