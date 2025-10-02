@@ -1,6 +1,6 @@
 {
   "name": "@coffic/astro-users",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "An Astro integration for user management with Cloudflare D1 database",
   "type": "module",
   "main": "index.ts",
