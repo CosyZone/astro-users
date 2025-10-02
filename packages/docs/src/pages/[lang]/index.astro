@@ -5,7 +5,7 @@ import DesignPhilosophy from '@/widgets/DesignPhilosophy.astro';
 import LiveDemo from '@/widgets/LiveDemo.astro';
 import BuilderPattern from '@/widgets/BuilderPattern.astro';
 import Showcase from '@/widgets/Showcase.astro';
-import { Button } from '@coffic/cosy-ui';
+import { Button, Hero } from '@coffic/cosy-ui';
 
 export const prerender = true;
 
@@ -34,5 +34,9 @@ interface Props {
     isArticle={false}
     verticalPadding="4xl"
     mainLayout="column">
-    <Button href="/en/manuals/guide"> 开始使用 </Button>
+    <Hero
+        title="Astro Users"
+        description="快速实现用户系统"
+        links={[{ text: '开始使用', href: `/${lang}/manuals/guide` }]}
+    />
 </BaseLayout>
