@@ -13,7 +13,7 @@ const { title, description, lang } = Astro.props;
 // 控制台侧边栏配置
 const getDashboardSidebar = (lang: string): ISidebarItem => {
   return {
-    href: `/${lang}/dashboard`,
+    href: `/users`,
     text: lang === 'zh-cn' ? '控制台' : 'Dashboard',
     items: [
       {
