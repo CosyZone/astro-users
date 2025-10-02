@@ -5,6 +5,7 @@ import vue from "@astrojs/vue";
 import pagefind from "astro-pagefind";
 import playformCompress from "@playform/compress";
 import cloudflare from "@astrojs/cloudflare";
+import users from "@coffic/astro-users"
 
 // https://astro.build/config
 export default defineConfig({
@@ -37,6 +38,7 @@ export default defineConfig({
     integrations: [
         mdx(),
         vue(),
+        users(),
         pagefind(),
         playformCompress({
             HTML: {

@@ -6,7 +6,7 @@
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
-    "./components": "./src/components",
+    "./components": "./src/components/index.ts",
     "./api-client": "./src/lib/api-client.ts",
     "./pages/users.astro": "./src/pages/users.astro",
     "./pages/login.astro": "./src/pages/login.astro",
