@@ -13,10 +13,6 @@ export const configApp = {
 			title: "Docs",
 		},
 		{
-			href: `/users`,
-			title: "用户管理",
-		},
-		{
 			href: `${LinkUtil.getBaseUrl()}${lang}/dashboard1`,
 			title: "控制台1",
 		},
