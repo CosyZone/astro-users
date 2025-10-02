@@ -1,14 +1,14 @@
 ---
 import { UsersQuery } from '@coffic/astro-users';
-import AppLayout from '../layout/AppLayout.astro';
+import AppLayout from '@/layouts/BaseLayout.astro';
 import { Container } from '@coffic/cosy-ui';
 import { LanguageUtil } from '@coffic/cosy-ui';
-import CreateUserForm from '../components/CreateUserForm.astro';
-import UserStats from '../components/UserStats.astro';
-import UserFilter from '../components/UserFilter.astro';
-import UserTable from '../components/UserTable.astro';
-import Pagination from '../components/Pagination.astro';
-import RoleStats from '../components/RoleStats.astro';
+import CreateUserForm from '@/components/CreateUserForm.astro';
+import UserStats from '@/components/UserStats.astro';
+import UserFilter from '@/components/UserFilter.astro';
+import UserTable from '@/components/UserTable.astro';
+import Pagination from '@/components/Pagination.astro';
+import RoleStats from '@/components/RoleStats.astro';
 
 const lang = LanguageUtil.getCurrentLanguage(Astro);
 

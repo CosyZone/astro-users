@@ -19,7 +19,7 @@ export default defineConfig({
 
     i18n: {
         locales: ["zh-cn", "en"],
-        defaultLocale: "en",
+        defaultLocale: "zh-cn",
         routing: {
             prefixDefaultLocale: true,
             redirectToDefaultLocale: true
@@ -30,7 +30,6 @@ export default defineConfig({
         resolve: {
             alias: {
                 "@": path.resolve("./src"),
-                "@demos": path.resolve("./src/demos"),
             },
         },
     },
