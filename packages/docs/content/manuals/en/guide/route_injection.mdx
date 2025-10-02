@@ -1,0 +1,133 @@
+---
+title: Astro Integration Route Injection Guide
+folder: false
+order: 4
+---
+
+# {frontmatter.title}
+
+## Introduction
+
+The [@coffic/astro-users](file:///Users/angel/Code/Coffic/astro-users/packages/core/src/integration/index.ts#L8-L8) integration automatically injects user management related page routes through Astro's `injectRoute()` API. When the integration is added to an Astro project, the following routes will be automatically available:
+
+## Injected Routes
+
+1. **User List Page**
+   - Route Pattern: `/users`
+   - Entry File: `src/pages/users.astro`
+
+2. **Create User Page**
+   - Route Pattern: `/users/create`
+   - Entry File: `src/pages/users/create.astro`
+
+3. **User Detail Page**
+   - Route Pattern: `/users/[id]`
+   - Entry File: `src/pages/users/[id]/index.astro`
+
+4. **Edit User Page**
+   - Route Pattern: `/users/[id]/edit`
+   - Entry File: `src/pages/users/[id]/edit.astro`
+
+## Implementation Principle
+
+In the integration's `astro:config:setup` hook, we use the `injectRoute()` method to register these routes:
+
+```typescript
+injectRoute({
+  pattern: '/users',
+  entrypoint: '@coffic/astro-users/src/pages/users.astro'
+});
+```
+
+## Usage
+
+### Automatic Injection (Recommended)
+
+When users install the integration through the `astro add` command, routes will be automatically injected:
+
+```bash
+# Using pnpm
+pnpm astro add @coffic/astro-users
+
+# Using npm
+npx astro add @coffic/astro-users
+
+# Using yarn
+yarn astro add @coffic/astro-users
+```
+
+After installation, users can directly access the following URLs:
+- `/users` - User list
+- `/users/create` - Create user
+- `/users/1` - User detail for ID 1
+- `/users/1/edit` - Edit user with ID 1
+
+### Manual Configuration
+
+If manual configuration is needed, you can add the integration in `astro.config.mjs`:
+
+```javascript
+import { defineConfig } from 'astro/config';
+import astroUsers from '@coffic/astro-users';
+
+export default defineConfig({
+  integrations: [
+    astroUsers()
+  ]
+});
+```
+
+## Route Functionality
+
+### User List Page (/users)
+- Display all user list
+- Support pagination
+- Support filtering (by username, role, etc.)
+- Display user statistics
+
+### Create User Page (/users/create)
+- Provide form for creating new users
+- Form validation
+- Redirect to user list after successful creation
+
+### User Detail Page (/users/[id])
+- Display detailed user information
+- Provide user deletion functionality
+- Provide edit user link
+
+### Edit User Page (/users/[id]/edit)
+- Provide form for editing user information
+- Form pre-filled with current user information
+- Redirect to user detail after successful update
+
+## API Endpoints
+
+In addition to page routes, the integration also provides the following API endpoints:
+
+- `GET /api/users` - Get user list
+- `POST /api/users` - Create new user
+- `GET /api/users/:id` - Get single user
+- `PUT /api/users/:id` - Update user information
+- `DELETE /api/users/:id` - Delete user
+- `GET /api/users/stats` - Get user statistics
+
+## Custom Configuration
+
+You can customize the integration behavior by passing options:
+
+```javascript
+export default defineConfig({
+  integrations: [
+    astroUsers({
+      devMode: true // Enable user management in development mode
+    })
+  ]
+});
+```
+
+## Notes
+
+1. The integration requires Astro v5.0.0 or higher
+2. The integration automatically handles database migrations
+3. User data is stored in Cloudflare D1 database (when deployed)
+4. In development environment, the integration uses Astro's local development database

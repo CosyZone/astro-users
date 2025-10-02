@@ -1,0 +1,157 @@
+---
+title: Astro User Management Integration
+folder: false
+order: 3
+---
+
+# {frontmatter.title}
+
+An Astro integration for user management that stores data in Cloudflare D1 database.
+
+## Features
+
+- User management functionality, including:
+  - User registration and authentication
+  - Role-based access control
+  - User profile management
+  - Account activation/deactivation
+- Automatically provides user management tools
+- Stores user data in Cloudflare D1 database
+- Supports Cloudflare Workers
+- Supports development mode
+
+## Installation
+
+```bash
+npm install @coffic/astro-users
+```
+
+## Usage
+
+Add the integration to your Astro configuration:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import astroUsers from '@coffic/astro-users';
+
+export default defineConfig({
+  integrations: [astroUsers({
+    binding: 'USERS_DB', // Your D1 database binding name
+    devMode: false       // Whether to enable in development mode
+  })],
+});
+```
+
+The integration will automatically:
+1. Provide user management tools
+2. Set up the database table structure for user storage
+
+## Cloudflare Setup
+
+1. Create a D1 database:
+   ```bash
+   wrangler d1 create users-db
+   ```
+
+2. Update your `wrangler.toml`:
+   ```toml
+   [[ d1_databases ]]
+   binding = "USERS_DB"
+   database_name = "users-db"
+   database_id = "your-database-id"
+   ```
+
+3. The integration will automatically create the database table structure:
+   ```sql
+   CREATE TABLE IF NOT EXISTS users (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       username TEXT NOT NULL UNIQUE,
+       email TEXT NOT NULL UNIQUE,
+       password TEXT NOT NULL,
+       first_name TEXT,
+       last_name TEXT,
+       avatar_url TEXT,
+       role TEXT DEFAULT 'user',
+       is_active BOOLEAN DEFAULT TRUE,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
+
+## How It Works
+
+This integration provides you with user management tools, allowing you to create, read, update, and delete users in Cloudflare D1 database. It includes role-based access control and account activation features.
+
+## Configuration Options
+
+| Option | Type | Default | Description |
+|------|------|--------|------|
+| `binding` | `string` | `'USERS_DB'` | Cloudflare D1 database binding name |
+| `devMode` | `boolean` | `false` | Whether to enable user management in development mode |
+
+## Development
+
+This project uses a monorepo structure with pnpm workspaces:
+
+```
+astro-users/
+├── package.json              # Root package management configuration
+├── pnpm-workspace.yaml       # pnpm workspace configuration
+├── packages/
+│   ├── core/                 # Astro integration package (renamed from astro-visits)
+│   │   ├── index.ts          # Integration entry file
+│   │   ├── package.json      # Integration package configuration
+│   │   ├── integration/      # Integration source code
+│   │   │   ├── index.ts      # Main integration implementation
+│   │   │   └── schema.sql    # Database structure
+│   │   └── src/
+│   │       ├── lib/          # User management tools
+│   │       │   └── users.ts  # User query and management class
+│   │       ├── types/        # TypeScript type definitions
+│   │       │   └── user.ts   # User type definitions
+│   │       └── pages/
+│   │           └── api/
+│   │               └── user.ts  # User management API endpoints
+│   └── example/              # Example project using the integration
+│       ├── package.json      # Example project configuration
+│       ├── astro.config.mjs  # Example project Astro configuration
+│       └── src/
+│           └── pages/
+│               ├── index.astro  # Example homepage
+│               └── admin.astro  # User management admin page
+```
+
+### Install Dependencies
+
+```bash
+pnpm install
+```
+
+### Run Example Project
+
+```bash
+# Run from root directory
+pnpm dev
+
+# Or run from example project directory
+cd packages/example
+pnpm dev
+```
+
+This will start the example Astro project running on an available port (e.g. http://localhost:4328)
+
+### Build Integration
+
+```bash
+# Build from root directory
+pnpm build
+
+# Or build from integration package directory
+cd packages/core
+pnpm build
+```
+
+## License
+
+MIT

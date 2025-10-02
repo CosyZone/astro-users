@@ -1,0 +1,164 @@
+---
+title: Project Structure Guide
+folder: false
+order: 5
+---
+
+# {frontmatter.title}
+
+## Core Directory Structure
+
+```
+/packages/core/
+├── src/
+│   ├── integration/
+│   │   ├── index.ts          # Astro integration entry
+│   │   └── schema.sql        # Database schema definition
+│   ├── lib/
+│   │   ├── users.ts          # User query utility class
+│   │   └── api-client.ts     # API client
+│   ├── pages/
+│   │   ├── api/
+│   │   │   ├── users.ts      # User API endpoints
+│   │   │   └── users/
+│   │   │       ├── [id].ts   # Single user API endpoint
+│   │   │       └── stats.ts  # User statistics API endpoint
+│   │   └── users/
+│   │       ├── users.astro   # User list page
+│   │       ├── create.astro  # Create user page
+│   │       └── [id]/
+│   │           ├── index.astro  # User detail page
+│   │           └── edit.astro   # Edit user page
+│   ├── types/
+│   │   ├── user.ts           # User-related type definitions
+│   │   └── raw-modules.d.ts  # Module declarations
+│   └── env.d.ts              # Environment type declarations
+├── index.ts                  # Package entry file
+├── package.json              # Package configuration file
+├── README.md                 # English documentation
+├── README_CN.md              # Chinese documentation
+├── USER_MANAGEMENT.md        # User management usage guide
+├── ADD_INTEGRATION.md        # Integration addition guide
+└── STRUCTURE.md              # Project structure guide
+```
+
+## Component Details
+
+### 1. Integration Components (src/integration/)
+
+#### index.ts
+- Astro integration entry file
+- Defines integration name and hooks
+- Configures integration options
+
+#### schema.sql
+- SQLite database schema definition
+- User table structure
+- Index definitions
+
+### 2. Library Components (src/lib/)
+
+#### users.ts
+- `UsersQuery` class provides all user management functionality
+- Database operation encapsulation
+- User query, create, update, delete methods
+- Statistics retrieval
+
+#### api-client.ts
+- Frontend API client
+- Encapsulates all user management API calls
+- Easy to use in browser
+
+### 3. Page Components (src/pages/)
+
+#### API Endpoints (src/pages/api/)
+
+##### users.ts
+- `GET /api/users` - Get user list
+- `POST /api/users` - Create new user
+
+##### users/[id].ts
+- `GET /api/users/:id` - Get single user
+- `PUT /api/users/:id` - Update user information
+- `DELETE /api/users/:id` - Delete user
+
+##### users/stats.ts
+- `GET /api/users/stats` - Get user statistics
+
+#### User Interface (src/pages/users/)
+
+##### users.astro
+- User list page
+- Pagination support
+- Filtering functionality
+- Statistics display
+
+##### create.astro
+- Create user form
+- Form validation
+- Submission handling
+
+##### [id]/index.astro
+- User detail page
+- User information display
+- Delete operation
+
+##### [id]/edit.astro
+- Edit user form
+- Form pre-filled
+- Update handling
+
+### 4. Type Definitions (src/types/)
+
+#### user.ts
+- `UserRecord` - User record type
+- `UserQueryOptions` - Query options type
+- `UserQueryResult` - Query result type
+- `UserStats` - Statistics type
+
+### 5. Package Configuration
+
+#### index.ts
+- Package entry file
+- Exports all public APIs
+- Exports type definitions
+
+#### package.json
+- Package metadata
+- Dependencies
+- Export mapping
+
+## Usage
+
+### Server-side Usage
+```typescript
+import { UsersQuery } from '@coffic/astro-users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const users = await usersQuery.getUsers();
+```
+
+### Frontend Usage
+```typescript
+import { UsersApiClient } from '@coffic/astro-users/api-client';
+
+const client = new UsersApiClient();
+const users = await client.getUsers();
+```
+
+### API Endpoint Usage
+```
+GET /api/users?page=1&limit=10
+POST /api/users
+GET /api/users/1
+PUT /api/users/1
+DELETE /api/users/1
+GET /api/users/stats
+```
+
+## Page Routes
+
+- `/users` - User list
+- `/users/create` - Create user
+- `/users/:id` - User detail
+- `/users/:id/edit` - Edit user

@@ -1,0 +1,179 @@
+---
+title: User Management Functionality Guide
+folder: false
+order: 6
+---
+
+# {frontmatter.title}
+
+## Introduction
+
+The [@coffic/astro-users](file:///Users/angel/Code/Coffic/astro-users/packages/core/src/integration/index.ts#L8-L8) integration provides complete user management functionality, including user creation, querying, updating, and deletion, as well as user statistics and permission management.
+
+## Features
+
+1. **User Management API** - RESTful API endpoints for user operations
+2. **User Interface** - Built-in user management interface
+3. **User Query Tools** - Server-side user query class
+4. **API Client** - API client for frontend use
+
+## API Endpoints
+
+### User Management Endpoints
+
+- `GET /api/users` - Get user list
+- `POST /api/users` - Create new user
+- `GET /api/users/:id` - Get single user
+- `PUT /api/users/:id` - Update user information
+- `DELETE /api/users/:id` - Delete user
+- `GET /api/users/stats` - Get user statistics
+
+### Query Parameters
+
+GET /api/users supports the following query parameters:
+- `page` - Page number (default: 1)
+- `limit` - Number per page (default: 20)
+- `username` - Username filter
+- `email` - Email filter
+- `role` - Role filter
+- `is_active` - Active status filter
+- `sortBy` - Sort field
+- `sortOrder` - Sort direction (asc/desc)
+
+## Built-in Interface
+
+### User List Page
+Path: `/users`
+Features:
+- User list display
+- Pagination support
+- Filtering functionality
+- User statistics display
+- Role statistics display
+
+### Create User Page
+Path: `/users/create`
+Features:
+- User creation form
+- Form validation
+- Redirect to user list after successful creation
+
+### Edit User Page
+Path: `/users/:id/edit`
+Features:
+- User information editing
+- Form pre-filled
+- Update operation
+
+### User Detail Page
+Path: `/users/:id`
+Features:
+- User detailed information display
+- Delete operation confirmation
+
+## Usage Examples
+
+### Using UsersQuery in Astro Components
+
+```astro
+---
+import { UsersQuery } from '@coffic/astro-users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+
+// Get user list
+const users = await usersQuery.getUsers({
+  page: 1,
+  limit: 10,
+  sortBy: 'created_at',
+  sortOrder: 'desc'
+});
+
+// Create new user
+const newUser = await usersQuery.createUser({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'secure_password'
+});
+---
+```
+
+### Using API Client in Frontend
+
+```javascript
+import { UsersApiClient } from '@coffic/astro-users';
+
+const client = new UsersApiClient();
+
+// Get user list
+const users = await client.getUsers({
+  page: 1,
+  limit: 10
+});
+
+// Create new user
+const newUser = await client.createUser({
+  username: 'jane_doe',
+  email: 'jane@example.com',
+  password: 'secure_password'
+});
+```
+
+### Using in API Routes
+
+```typescript
+import type { APIRoute } from 'astro';
+import { UsersQuery } from '@coffic/astro-users';
+
+export const GET: APIRoute = async ({ locals }) => {
+  const usersQuery = new UsersQuery(locals);
+  const users = await usersQuery.getUsers();
+  
+  return new Response(JSON.stringify(users), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+```
+
+## Database Structure
+
+The user table contains the following fields:
+- `id` - Primary key, auto-incrementing
+- `username` - Username, unique
+- `email` - Email, unique
+- `password` - Password (should be encrypted)
+- `first_name` - First name (optional)
+- `last_name` - Last name (optional)
+- `avatar_url` - Avatar URL (optional)
+- `role` - Role (default: 'user')
+- `is_active` - Is active (default: true)
+- `created_at` - Creation time
+- `updated_at` - Update time
+
+## Permission Roles
+
+The following roles are supported by default:
+- `user` - Regular user
+- `admin` - Administrator
+- `moderator` - Moderator
+
+## Error Handling
+
+All API endpoints return appropriate HTTP status codes and error messages:
+- 200 - Success
+- 201 - Created successfully
+- 400 - Bad request parameters
+- 404 - Resource not found
+- 500 - Internal server error
+
+## Custom Configuration
+
+You can customize the database binding name through environment variables:
+```bash
+ASTRO_USERS_BINDING=MY_USERS_DB
+```
+
+The default binding name is `USERS_DB`.

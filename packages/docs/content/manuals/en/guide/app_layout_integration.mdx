@@ -1,0 +1,74 @@
+---
+title: AppLayout Integration Guide
+folder: false
+order: 1
+---
+
+# {frontmatter.title}
+
+## Introduction
+
+To provide a consistent user interface and navigation experience, we have integrated the AppLayout component into all user management pages. AppLayout provides a unified header, sidebar, and footer, ensuring a consistent experience as users navigate between different pages.
+
+## Integrated Pages
+
+The following user management pages have been integrated with AppLayout:
+
+1. **User List Page** - `/users`
+2. **Create User Page** - `/users/create`
+3. **User Detail Page** - `/users/[id]`
+4. **Edit User Page** - `/users/[id]/edit`
+
+## Implementation Details
+
+### Import Path
+
+All pages use the following import statement to import AppLayout:
+
+```astro
+import AppLayout from '../../../../example/src/layout/AppLayout.astro';
+```
+
+### Page Wrapper
+
+The content of each page is wrapped in the AppLayout component:
+
+```astro
+<AppLayout
+    title="Page Title"
+    description="Page Description">
+    <!-- Page Content -->
+</AppLayout>
+```
+
+### Page Metadata
+
+Each page provides appropriate titles and descriptions:
+
+- **User List Page**: "User Management" / "Manage user accounts"
+- **Create User Page**: "Create New User" / "Create a new user account"
+- **User Detail Page**: "User Detail - [Username]" / "View detailed information for user [Username]"
+- **Edit User Page**: "Edit User - [Username]" / "Edit information for user [Username]"
+
+## Style Preservation
+
+Despite integrating AppLayout, each page retains its original style, ensuring visual consistency while maintaining the uniqueness of each page.
+
+## Navigation Consistency
+
+By using AppLayout, all user management pages now have the same navigation menu, allowing users to easily switch between the following pages:
+
+- Home
+- Management Page
+- User List
+- Create User
+
+## Responsive Design
+
+AppLayout provides responsive design, ensuring that user management pages display properly on various devices.
+
+## Notes
+
+1. AppLayout depends on the configuration in the example project, so the correct relative path is needed when using it in the core package
+2. All page titles and descriptions are localized to support both Chinese and English display
+3. Navigation links between pages remain unchanged to ensure users can browse normally

@@ -1,0 +1,188 @@
+---
+title: Component Usage Guide
+folder: false
+order: 2
+---
+
+# {frontmatter.title}
+
+To improve reusability and flexibility, we have split the user management functionality into multiple independent components. Users can integrate these components into their own interfaces without needing to use our provided complete pages.
+
+## Available Components
+
+### 1. UserList (User List Component)
+Displays user list and pagination controls.
+
+**Props:**
+- `users`: UserQueryResult - User data
+- `usernameFilter`: string (optional) - Username filter condition
+- `roleFilter`: string (optional) - Role filter condition
+- `limit`: number - Number of users displayed per page
+
+**Usage Example:**
+```astro
+---
+import UserList from '@coffic/astro-users/src/components/UserList.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const users = await usersQuery.getUsers({
+  page: 1,
+  limit: 10
+});
+---
+
+<UserList 
+  users={users} 
+  limit={10} 
+/>
+```
+
+### 2. UserFilter (User Filter Component)
+Provides user filter form.
+
+**Props:**
+- `usernameFilter`: string (optional) - Username filter condition
+- `roleFilter`: string (optional) - Role filter condition
+- `limit`: number - Number of users displayed per page
+
+**Usage Example:**
+```astro
+---
+import UserFilter from '@coffic/astro-users/src/components/UserFilter.astro';
+---
+
+<UserFilter 
+  usernameFilter="" 
+  roleFilter="" 
+  limit={10} 
+/>
+```
+
+### 3. CreateUserForm (Create User Form Component)
+Form for creating new users.
+
+**Props:**
+- `createSuccess`: boolean (optional) - Whether creation was successful
+- `createError`: string | null (optional) - Creation error message
+
+**Usage Example:**
+```astro
+---
+import CreateUserForm from '@coffic/astro-users/src/components/CreateUserForm.astro';
+---
+
+<CreateUserForm />
+```
+
+### 4. EditUserForm (Edit User Form Component)
+Form for editing existing user information.
+
+**Props:**
+- `user`: UserRecord - User data to edit
+- `updateSuccess`: boolean (optional) - Whether update was successful
+- `updateError`: string | null (optional) - Update error message
+
+**Usage Example:**
+```astro
+---
+import EditUserForm from '@coffic/astro-users/src/components/EditUserForm.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const user = await usersQuery.getUserById(1);
+---
+
+<EditUserForm user={user} />
+```
+
+### 5. UserDetail (User Detail Component)
+Displays user detailed information.
+
+**Props:**
+- `user`: UserRecord - User data
+
+**Usage Example:**
+```astro
+---
+import UserDetail from '@coffic/astro-users/src/components/UserDetail.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const user = await usersQuery.getUserById(1);
+---
+
+<UserDetail user={user} />
+```
+
+### 6. SignupForm (Signup Form Component)
+User registration form.
+
+**Props:**
+- `signupSuccess`: boolean (optional) - Whether signup was successful
+- `signupError`: string | null (optional) - Signup error message
+
+**Usage Example:**
+```astro
+---
+import SignupForm from '@coffic/astro-users/src/components/SignupForm.astro';
+---
+
+<SignupForm />
+```
+
+### 7. LoginForm (Login Form Component)
+User login form.
+
+**Props:**
+- `loginError`: string | null (optional) - Login error message
+
+**Usage Example:**
+```astro
+---
+import LoginForm from '@coffic/astro-users/src/components/LoginForm.astro';
+---
+
+<LoginForm />
+```
+
+## Integration Example
+
+Here's an example of how to use these components in a custom page:
+
+```astro
+---
+import UserList from '@coffic/astro-users/src/components/UserList.astro';
+import UserFilter from '@coffic/astro-users/src/components/UserFilter.astro';
+import { UsersQuery } from '@coffic/astro-users/src/lib/users';
+
+const usersQuery = new UsersQuery(Astro.locals);
+const users = await usersQuery.getUsers({
+  page: 1,
+  limit: 10
+});
+---
+
+<div>
+  <h1>My User Management Page</h1>
+  
+  <UserFilter 
+    usernameFilter="" 
+    roleFilter="" 
+    limit={10} 
+  />
+  
+  <UserList 
+    users={users} 
+    limit={10} 
+  />
+</div>
+```
+
+## Notes
+
+1. All components depend on the `@coffic/cosy-ui` library, please ensure it is installed.
+2. When using data query components, you need to pass `Astro.locals` to correctly access the database.
+3. Component styles use CSS Grid and Flexbox, please ensure browser compatibility.
+4. Form submission handling needs to be implemented in the page using the components.
+5. Components need to be imported through full paths, for example: `@coffic/astro-users/src/components/UserList.astro`
